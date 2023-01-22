@@ -12,3 +12,4 @@ Notes:
 - need python3 in your path in order to launch properly
 - physical.py contains stubs
 - onboard.py should do heavy lifting for onboard code
+- TODO: need to state what packages are needed
