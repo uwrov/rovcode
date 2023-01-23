@@ -14,14 +14,7 @@ transform_mat = np.array([[0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  1.
 
 transform_inv = np.linalg.inv(transform_mat)
 
-motor_scalars = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
-
-
-def wrench_to_col(vector) -> np.array:
-    return np.array([vector]).T
-
-def convert_vector_to_pwms(vector) -> np.array:
-    # Calculate motor powers
-    input_vector = wrench_to_col(vector)
+def convert_force_and_torque_to_motor_powers(vector) -> np.array:
+    input_vector = np.array([vector]).T
     motor_powers = transform_inv @ input_vector
     return motor_powers

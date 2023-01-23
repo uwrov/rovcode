@@ -1,7 +1,7 @@
 import random
 
-from .motor_power_translator import convert_vector_to_pwms
-from .pwm_translator import convert_mp_to_pwms
+from .motor_power_translator import convert_force_and_torque_to_motor_powers
+from .pwm_translator import convert_motor_powers_to_pwms
 
 accelerometer, gyroscope = None, None
 translate_x = 0.0
@@ -25,11 +25,10 @@ async def update_sensors(summary_data):
 
 async def update_controls():
     global pin_pwms
-    powers = convert_vector_to_pwms(
+    powers = convert_force_and_torque_to_motor_powers(
         [translate_x, 0., 0., 0., 0., 0.]
     )
-    pwms = convert_mp_to_pwms(powers)
-    print(pwms)
+    pwms = convert_motor_powers_to_pwms(powers)
     pin_pwms = [{
         'number': pin_ids[i],
         'value': pwms[i]
