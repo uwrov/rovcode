@@ -33,9 +33,29 @@ func _on_data():
 
 func _process(delta):
 	_client.poll()
+	
+	
+#	var translation: Vector3 = Vector3.FORWARD
+	
+	var translation := Vector3(
+		Input.get_axis("move_right", "move_left"),
+		Input.get_axis("move_forward", "move_back"),
+		Input.get_axis("move_down", "move_up")
+	)
+	
+	var rotation := Vector3(
+		Input.get_axis("pitch_up", "pitch_down"),
+		Input.get_axis("roll_right", "roll_left"),
+		Input.get_axis("yaw_right", "yaw_left")
+	)
+	
+#	print("%s : %s" % [str(translation), str(rotation)])
+	
 	if ready:
 		var data = {
 			"type": "control_input",
-			"translate": Input.get_axis("move_left", "move_right")
+			"translate": Input.get_axis("move_left", "move_right"),
+			"translation": [translation.x, translation.y, translation.z],
+			"rotation": [rotation.x, rotation.y, rotation.z]
 		}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())

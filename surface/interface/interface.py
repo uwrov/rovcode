@@ -26,6 +26,8 @@ async def server_handler(_websocket):
         data = json.loads(str(message)[2:-1])
         result = json.dumps(data)
         core.translate_x = data['translate']
+        core.translation = data['translation']
+        core.rotation = data['rotation']
 
 
 async def notify_sensor_update():
