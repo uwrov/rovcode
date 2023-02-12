@@ -20,3 +20,10 @@ margin_top = -7.0
 margin_right = 28.0
 margin_bottom = 7.0
 text = "Test text"
+
+[node name="InputLabel" type="Label" parent="."]
+margin_left = 9.0
+margin_top = 10.0
+margin_right = 49.0
+margin_bottom = 24.0
+text = "Input info goes here"

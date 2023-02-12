@@ -49,7 +49,7 @@ func _process(delta):
 		Input.get_axis("yaw_right", "yaw_left")
 	)
 	
-#	print("%s : %s" % [str(translation), str(rotation)])
+	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
 	
 	if ready:
 		var data = {
