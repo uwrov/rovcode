@@ -9,7 +9,7 @@ import websockets
 
 
 def main():
-    os.system('clear')
+    # os.system('clear')
     print('surface server starting')
     core.init(interface, task)  # dirty hack to import sibling modules...
     interface.init(core, task)

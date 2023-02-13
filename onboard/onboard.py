@@ -9,7 +9,7 @@ rov, websocket_uri = None, None
 
 
 def main():
-    os.system('clear')
+    # os.system('clear')
     print('onboard client starting')
     setup_from_args()
     rov.init()
