@@ -28,7 +28,7 @@ async def flush_pin_pwms():
 # updates accelerometer and gyroscope values
 async def poll_sensors():
     # # Gyroscope data (in degrees per second):
-    # x_gyro, y_gyro, z_gyro = bno.read_gyroscope()
+    # gyroscope = bno.read_gyroscope()
     # # Accelerometer data (in meters per second squared):
-    # x_accel, y_accel, z_accel = bno.read_accelerometer()
+    # accelerometer = bno.read_accelerometer()
     pass
