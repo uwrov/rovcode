@@ -39,11 +39,10 @@ async def server_handler(websocket):
 async def consumer_handler(websocket):
     async for message in websocket:
         data = json.loads(message)
-        match data['type']:
-            case 'sensor_summary':
-                await core.update_sensors(data)
-            case _:
-                print(f'Invalid type {data.type} for message: {message}')
+        if data['type'] == 'sensor_summary':
+            await core.update_sensors(data)
+        else:
+            print(f'Invalid type {data.type} for message: {message}')
 
 
 # outgoing command handling (control outputs) ----------------------------------
