@@ -1,3 +1,5 @@
+Make sure to add Godot to your path (or whatever the equivalent is on your operating system)
+
 On macOS, to ensure you can run Godot stuff from command line:
 
 ```ln -s /Applications/Godot.app/Contents/MacOS/Godot /usr/local/bin/godot```
