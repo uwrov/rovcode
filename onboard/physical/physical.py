@@ -1,7 +1,7 @@
 import pigpio
-# import logging
-# import sys
-# import time
+import logging
+import sys
+import time
 
 # from Adafruit_BNO055 import BNO055
 accelerometer, gyroscope = None, None
@@ -11,6 +11,7 @@ pi = None
 def init():
     global pi
     pi = pigpio.pi("main", 8888)
+    # bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
 
 # number = GPIO number
 # value = PWM value
@@ -26,5 +27,8 @@ async def flush_pin_pwms():
 
 # updates accelerometer and gyroscope values
 async def poll_sensors():
-    print('polling physical sensors not yet implemented')
-    # TODO implement
+    # # Gyroscope data (in degrees per second):
+    # x_gyro, y_gyro, z_gyro = bno.read_gyroscope()
+    # # Accelerometer data (in meters per second squared):
+    # x_accel, y_accel, z_accel = bno.read_accelerometer()
+    pass
