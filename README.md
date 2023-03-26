@@ -1,11 +1,16 @@
 # ROV Code
 ## Setup
-Make sure to add Godot to your path (or whatever the equivalent is on your operating system)
+Install Godot, and make sure to add Godot to your path (or whatever the equivalent is on your operating system). 
 
-On macOS, to ensure you can run Godot stuff from command line:
+If you are getting a 'file not found' error around subprocesses, recheck that Godot is in your path. Otherwise contact Alnis with other errors. 
+
+On macOS, to ensure you can run Godot stuff from command line (this pretends to add Godot to path):
 
 ```ln -s /Applications/Godot.app/Contents/MacOS/Godot /usr/local/bin/godot```
 
+On Windows, look for your 'Environment Variables' setting menu, click on the Path variable, and add a line with the directory path to your Godot executable. (Your executable needs to be named godot.exe - rename if necessary.)
+
+On Linux... good luck, but you probably know what you're doing. (Please add documentation if you figure it out.)
 
 Test websocket connection locally:
 
