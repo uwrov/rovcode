@@ -11,12 +11,14 @@ rov, websocket_uri = None, None
 def main():
     # os.system('clear')
     print('onboard client starting')
-    setup_from_args()
+    setup_using_command_line_args()
     rov.init()
     asyncio.run(client_handler())
 
 
-def setup_from_args():
+# allows file to be run with arguments
+# includes default websocket if none specified 
+def setup_using_command_line_args():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('-p', '--physical', action='store_true',
                             help='run using physical instead of simulated hardware')
@@ -32,7 +34,7 @@ def setup_from_args():
     websocket_uri = f'ws://{args.websocket}'
 
 
-# connect to surface station ---------------------------------------------------
+# connect to surface station
 async def client_handler():
     async for websocket in websockets.connect(websocket_uri):
         try:
@@ -46,7 +48,7 @@ async def client_handler():
             continue
 
 
-# incoming command handling (instructions for ROV) -----------------------------
+# incoming command handling (instructions for ROV)
 async def consumer_handler(websocket):
     async for message in websocket:
         data = json.loads(message)
@@ -58,7 +60,7 @@ async def consumer_handler(websocket):
             print(f'Invalid type {data.type} for message: {message}')
 
 
-# outgoing data handling (sensor readings) -------------------------------------
+# outgoing data handling (sensor readings)
 async def producer_handler(websocket):
     while True:
         await asyncio.gather(
@@ -78,6 +80,5 @@ async def send_onboard_digest(websocket):
     }))
 
 
-# start the rov! ---------------------------------------------------------------
 if __name__ == "__main__":
     main()
