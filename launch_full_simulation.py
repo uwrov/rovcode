@@ -2,7 +2,7 @@ import pathlib
 import subprocess
 import os
 
-
+# TODO: detect whether python and godot are in path; provide sane errors if not
 if os.name == 'posix':  # mac, linux, etc.
     surface_cwd = (pathlib.Path(__file__).parent / 'surface').resolve()
     surface_proc = subprocess.Popen(['python3', 'surface.py'], cwd=surface_cwd)
