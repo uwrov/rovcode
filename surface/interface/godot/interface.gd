@@ -55,7 +55,8 @@ func _process(delta):
 		var data = {
 			"type": "control_input",
 			"translate": Input.get_axis("move_left", "move_right"),
-			"translation": [translation.x, translation.y, translation.z],
-			"rotation": [rotation.x, rotation.y, rotation.z]
+			"translation": [translation.x, translation.y * 5.0, translation.z * 3.0],
+			"rotation": [rotation.x, rotation.y, rotation.z],
+			"direct_motors": $DirectMotorsButton.pressed
 		}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())

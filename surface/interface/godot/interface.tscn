@@ -6,9 +6,6 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="Label" type="Label" parent="."]
 anchor_left = 0.5
@@ -27,3 +24,16 @@ margin_top = 10.0
 margin_right = 49.0
 margin_bottom = 24.0
 text = "Input info goes here"
+
+[node name="DirectMotorsButton" type="CheckButton" parent="."]
+margin_left = 222.0
+margin_top = 40.0
+margin_right = 298.0
+margin_bottom = 80.0
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 17.0
+margin_top = 55.0
+margin_right = 57.0
+margin_bottom = 69.0
+text = "Direct motors instead of axes"
