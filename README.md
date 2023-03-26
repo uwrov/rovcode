@@ -36,6 +36,9 @@ On the surface, open the repository in VSCode and open launch_surface.py. Press 
 ### Simulated ROV
 On the surface (or any computer), open the repository in VSCode and open launch_full_simulation.py. Press the Play button to run the file. 
 
+### Testing Networking
+If you would like to test networking without actually running the physical ROV, run launch_surface.py on one computer, and run launch_onboard_simulation.py on another computer.
+
 ## Documentation
 See in-line comments for implementation-related documentation.
 
