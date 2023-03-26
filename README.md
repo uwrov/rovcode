@@ -23,6 +23,14 @@ Notes:
 - onboard.py should do heavy lifting for onboard code
 - TODO: need to state what packages are needed
 
+## Running the System
+### Physical ROV
+On the ROV, use the terminal to run launch_onboard_physical.py. The command is `python3 launch_onboard_physical.py`. (Run this command from the directory of the file.)
+On the surface, open the repository in VSCode and open launch_surface.py. Press the Play button to run the file. 
+
+### Simulated ROV
+On the surface (or any computer), open the repository in VSCode and open launch_full_simulation.py. Press the Play button to run the file. 
+
 ## Documentation
 See in-line comments for implementation-related documentation.
 
