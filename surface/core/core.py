@@ -14,7 +14,8 @@ direct_motors = False
 
 pin_pwms = None
 
-pin_ids = [20, 25, 24, 23, 12, 16]
+# pin_ids = [20, 25, 24, 23, 12, 16]
+pin_ids = [20, 25, 23, 24, 12, 16] # switch E and F to work around E's old ESC being broken
 
 
 def init(_interface, _task):
