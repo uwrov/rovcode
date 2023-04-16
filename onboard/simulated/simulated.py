@@ -10,7 +10,8 @@ def init():
 
 
 def set_pin_pwm(number, value):
-    print(f'setting pwm: {number} {value}')
+    fraction = (value - 1500) / 400.0
+    print(f'setting pwm: pin {number} at {value} µs ({(value - 1500):+4d}, {fraction:+7.3f})')
     if number == 10:
         global pin_hack
         pin_hack = value
