@@ -41,9 +41,7 @@ async def update_controls():
         )
     powers[4] = -powers[4]
     pwms = convert_motor_powers_to_pwms(powers)
-    print(pwms)
     
-
     pin_pwms = [{
         'number': pin_ids[i],
         'value': pwms[i]
