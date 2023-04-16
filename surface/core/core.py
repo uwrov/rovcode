@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from .rov_config import thruster_config
 
 from .motor_power_translator import convert_force_and_torque_to_motor_powers
@@ -17,6 +18,12 @@ pin_pwms = None
 # pin_ids = [20, 25, 24, 23, 12, 16]
 pin_ids = [20, 25, 23, 24, 12, 16] # switch E and F to work around E's old ESC being broken
 
+prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
+
+
+time_to_ramp = 0.3
+time_per_cycle = 0.01
+amplitude = 400
 
 def init(_interface, _task):
     global interface, task
@@ -42,6 +49,15 @@ async def update_controls():
     powers[4] = -powers[4]
     pwms = convert_motor_powers_to_pwms(powers)
     
+    global prev_pwms
+    ramp_limit = (time_per_cycle / time_to_ramp) * amplitude
+
+    delta_pwms = np.subtract(pwms, prev_pwms)
+    delta_pwms = np.clip(delta_pwms, -ramp_limit, +ramp_limit)
+
+    pwms = np.add(prev_pwms, delta_pwms).astype(int).tolist()
+    prev_pwms = pwms
+
     pin_pwms = [{
         'number': pin_ids[i],
         'value': pwms[i]
