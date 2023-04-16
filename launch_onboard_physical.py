@@ -5,7 +5,7 @@ import subprocess
 
 # TODO: make this live in a separate gitignored-file?
 # TODO: investigate using raspberrypi.local instead of hardcoded IP addresses?
-SURFACE_STATION_IP_ADDRESS = '10.19.2.241'
+SURFACE_STATION_IP_ADDRESS = '192.168.0.69'
 
 onboard_cwd = (pathlib.Path(__file__).parent / 'onboard').resolve()
 onboard_proc = subprocess.Popen(['python3', 'onboard.py', '--physical',

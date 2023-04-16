@@ -17,6 +17,8 @@ def init():
 # value = PWM value
 def set_pin_pwm(number, value): 
     global pi
+    print("number :" +  str(number))
+    print("value: " + str(value))
     pi.set_servo_pulsewidth(number, value)
 
 

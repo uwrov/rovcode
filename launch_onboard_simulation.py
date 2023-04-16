@@ -2,7 +2,7 @@ import pathlib
 import subprocess
 import os
 
-SURFACE_STATION_IP_ADDRESS = '10.19.2.241'
+SURFACE_STATION_IP_ADDRESS = '192.168.0.69'
 
 if os.name == 'posix':  # mac, linux, etc.
     # surface_cwd = (pathlib.Path(__file__).parent / 'surface').resolve()
