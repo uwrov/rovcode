@@ -16,10 +16,21 @@ direct_motors = False
 pin_pwms = None
 
 # pin_ids = [20, 25, 24, 23, 12, 16]
-pin_ids = [20, 25, 23, 24, 12, 16] # switch E and F to work around E's old ESC being broken
+# pin_ids = [20, 25, 23, 24, 12, 16] # switch E and F to work around E's old ESC being broken
 
 prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
 
+# pin_ids = []
+# motor_directions = []
+# for motor in thruster_config:   
+#     pin_ids.append(motor.get('pin'))
+#     if motor.get('run_reversed'):
+#         motor_directions.append(-1)
+#     else:
+#         motor_directions.append(1)
+# print(pin_ids)
+# print(motor_directions)
+# thruster_config[0]['pin'] 
 
 time_to_ramp = 0.3
 time_per_cycle = 0.01
@@ -46,7 +57,10 @@ async def update_controls():
         powers = convert_force_and_torque_to_motor_powers(
             [translation[0], translation[1], translation[2], rotation[0], rotation[1], rotation[2]]
         )
-    powers[4] = -powers[4]
+
+    for i in range(len(powers)):
+        powers[i] = powers[i] * thruster_config[i]['direction']
+
     pwms = convert_motor_powers_to_pwms(powers)
     
     global prev_pwms
@@ -59,6 +73,6 @@ async def update_controls():
     prev_pwms = pwms
 
     pin_pwms = [{
-        'number': pin_ids[i],
+        'number': thruster_config[i]['pin'],
         'value': pwms[i]
     } for i in range(len(pwms))]
