@@ -32,7 +32,8 @@ thruster_config = [
         'orientation': [0.0, -1.0, 0.0],
         'pin': 20,
         'model': 't-100',
-        'direction': 1
+        'direction': -1,
+        'letter': 'A',
     },
     {
         'name': 'forward_right',
@@ -40,7 +41,8 @@ thruster_config = [
         'orientation': [0.0, -1.0, 0.0],
         'pin': 25,
         'model': 't-100',
-        'direction': 1
+        'direction': -1,
+        'letter': 'D',
     },
     {
         'name': 'forward_top',
@@ -48,7 +50,8 @@ thruster_config = [
         'orientation': [0.0, -1.0, 0.0],
         'pin': 24,
         'model': 't-200',
-        'direction': 1
+        'direction': -1,
+        'letter': 'E',
     },
     {
         'name': 'sideways_top',
@@ -56,7 +59,8 @@ thruster_config = [
         'orientation': [1.0, 0.0, 0.0],
         'pin': 23,
         'model': 't-100',
-        'direction': 1
+        'direction': 1,
+        'letter': 'F',
     },
     {
         'name': 'up_left',
@@ -64,7 +68,8 @@ thruster_config = [
         'orientation': [0.0, 0.0, 1.0],
         'pin': 12,
         'model': 't-100',
-        'direction': 1
+        'direction': -1,
+        'letter': 'C',
     },
     {
         'name': 'up_right',
@@ -72,6 +77,7 @@ thruster_config = [
         'orientation': [0.0, 0.0, 1.0],
         'pin': 16,
         'model': 't-100',
-        'direction': 1
+        'direction': 1,
+        'letter': 'B',
     },
 ]
