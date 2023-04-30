@@ -51,6 +51,14 @@ func _process(delta):
 	
 	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
 	
+	$"%TranslationXValue".text = str("%0.3f" % translation.x)
+	$"%TranslationYValue".text = str("%0.3f" % translation.y)
+	$"%TranslationZValue".text = str("%0.3f" % translation.z)
+	
+	$"%RotationXValue".text = str("%0.3f" % rotation.x)
+	$"%RotationYValue".text = str("%0.3f" % rotation.y)
+	$"%RotationZValue".text = str("%0.3f" % rotation.z)
+	
 	var servo_pwm = $ServoPWMSlider.value
 	$ServoCurrentPWMLabel.text = str(servo_pwm)
 	

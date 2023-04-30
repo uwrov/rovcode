@@ -19,6 +19,7 @@ margin_bottom = 7.0
 text = "Test text"
 
 [node name="InputLabel" type="Label" parent="."]
+visible = false
 margin_left = 9.0
 margin_top = 10.0
 margin_right = 49.0
@@ -67,3 +68,149 @@ margin_top = 127.0
 margin_right = 498.0
 margin_bottom = 141.0
 text = "CURRENT PWM"
+
+[node name="TranslationInfoContainer" type="PanelContainer" parent="."]
+margin_left = 224.0
+margin_top = 326.0
+margin_right = 398.0
+margin_bottom = 408.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TranslationInfoContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 167.0
+margin_bottom = 75.0
+
+[node name="Label" type="Label" parent="TranslationInfoContainer/VBoxContainer"]
+margin_right = 160.0
+margin_bottom = 14.0
+text = "Translation Inputs:"
+align = 1
+
+[node name="GridContainer" type="GridContainer" parent="TranslationInfoContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 160.0
+margin_bottom = 68.0
+columns = 2
+
+[node name="TranslationXLabel" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+margin_right = 120.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "X (strafe left):"
+
+[node name="TranslationXValue" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_right = 160.0
+margin_bottom = 14.0
+text = "0.000"
+align = 2
+
+[node name="TranslationYLabel" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+margin_top = 18.0
+margin_right = 120.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "Y (move back):"
+
+[node name="TranslationYValue" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_top = 18.0
+margin_right = 160.0
+margin_bottom = 32.0
+text = "0.000"
+align = 2
+
+[node name="TranslationZLabel" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+margin_top = 36.0
+margin_right = 120.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Z (rise up):"
+
+[node name="TranslationZValue" type="Label" parent="TranslationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_top = 36.0
+margin_right = 160.0
+margin_bottom = 50.0
+text = "0.000"
+align = 2
+
+[node name="RotationInfoContainer" type="PanelContainer" parent="."]
+margin_left = 37.0
+margin_top = 326.0
+margin_right = 211.0
+margin_bottom = 408.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RotationInfoContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 167.0
+margin_bottom = 75.0
+
+[node name="Label" type="Label" parent="RotationInfoContainer/VBoxContainer"]
+margin_right = 160.0
+margin_bottom = 14.0
+text = "Rotation Inputs:"
+align = 1
+
+[node name="GridContainer" type="GridContainer" parent="RotationInfoContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 160.0
+margin_bottom = 68.0
+columns = 2
+
+[node name="RotationXLabel" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+margin_right = 120.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "X (pitch down):"
+
+[node name="RotationXValue" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_right = 160.0
+margin_bottom = 14.0
+text = "0.000"
+align = 2
+
+[node name="RotationYLabel" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+margin_top = 18.0
+margin_right = 120.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "Y (roll left):"
+
+[node name="RotationYValue" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_top = 18.0
+margin_right = 160.0
+margin_bottom = 32.0
+text = "0.000"
+align = 2
+
+[node name="RotationZLabel" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+margin_top = 36.0
+margin_right = 120.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Z (yaw left):"
+
+[node name="RotationZValue" type="Label" parent="RotationInfoContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+margin_left = 124.0
+margin_top = 36.0
+margin_right = 160.0
+margin_bottom = 50.0
+text = "0.000"
+align = 2
