@@ -13,6 +13,9 @@ rotation = [0.0, 0.0, 0.0]
 
 direct_motors = False
 
+servo_pin = 26
+servo_pwm = 1500
+
 pin_pwms = None
 
 # pin_ids = [20, 25, 24, 23, 12, 16]
@@ -76,3 +79,8 @@ async def update_controls():
         'number': thruster_config[i]['pin'],
         'value': pwms[i]
     } for i in range(len(pwms))]
+
+    pin_pwms.append({
+        'number': servo_pin,
+        'value': servo_pwm,
+    })

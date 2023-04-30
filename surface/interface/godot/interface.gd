@@ -51,12 +51,16 @@ func _process(delta):
 	
 	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
 	
+	var servo_pwm = $ServoPWMSlider.value
+	$ServoCurrentPWMLabel.text = str(servo_pwm)
+	
 	if ready:
 		var data = {
 			"type": "control_input",
 			"translate": Input.get_axis("move_left", "move_right"),
 			"translation": [translation.x, translation.y * 5.0, translation.z * 3.0],
 			"rotation": [rotation.x, rotation.y, rotation.z],
-			"direct_motors": $DirectMotorsButton.pressed
+			"direct_motors": $DirectMotorsButton.pressed,
+			"servo_pwm": int(servo_pwm),
 		}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())

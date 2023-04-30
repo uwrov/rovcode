@@ -37,3 +37,33 @@ margin_top = 55.0
 margin_right = 57.0
 margin_bottom = 69.0
 text = "Direct motors instead of axes"
+
+[node name="ServoPWMSlider" type="HSlider" parent="."]
+margin_left = 86.0
+margin_top = 104.0
+margin_right = 817.0
+margin_bottom = 120.0
+min_value = 1000.0
+max_value = 2000.0
+value = 1500.0
+
+[node name="ServoLowerPWMLabel" type="Label" parent="."]
+margin_left = 35.0
+margin_top = 106.0
+margin_right = 75.0
+margin_bottom = 120.0
+text = "1000"
+
+[node name="ServoUpperPWMLabel" type="Label" parent="."]
+margin_left = 823.0
+margin_top = 105.0
+margin_right = 863.0
+margin_bottom = 119.0
+text = "2000"
+
+[node name="ServoCurrentPWMLabel" type="Label" parent="."]
+margin_left = 403.0
+margin_top = 127.0
+margin_right = 498.0
+margin_bottom = 141.0
+text = "CURRENT PWM"
