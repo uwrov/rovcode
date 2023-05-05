@@ -35,7 +35,7 @@ prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
 # print(motor_directions)
 # thruster_config[0]['pin'] 
 
-time_to_ramp = 0.3
+time_to_ramp = 1.0
 time_per_cycle = 0.01
 amplitude = 400
 

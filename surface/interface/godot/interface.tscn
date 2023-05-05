@@ -19,7 +19,6 @@ margin_bottom = 7.0
 text = "Test text"
 
 [node name="InputLabel" type="Label" parent="."]
-visible = false
 margin_left = 9.0
 margin_top = 10.0
 margin_right = 49.0
