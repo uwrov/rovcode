@@ -50,6 +50,9 @@ func _process(delta):
 	)
 	
 	rotation *= 0.3
+	rotation.z *= 1.2
+	translation.y *= abs(pow(translation.y, 1.0))
+	translation.x *= 1.5
 	
 	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
 	
