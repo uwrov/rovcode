@@ -64,6 +64,13 @@ async def update_controls():
     for i in range(len(powers)):
         powers[i] = powers[i] * thruster_config[i]['direction']
 
+    powers *= 0.25
+
+    largest_power = np.max(np.abs(powers))
+    if largest_power > 0.5:
+        powers /= largest_power
+        powers *= 0.5
+
     pwms = convert_motor_powers_to_pwms(powers)
     
     global prev_pwms

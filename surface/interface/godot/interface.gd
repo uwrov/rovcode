@@ -49,10 +49,18 @@ func _process(delta):
 		Input.get_axis("yaw_right", "yaw_left")
 	)
 	
-	rotation *= 0.3
-	rotation.z *= 1.2
+#	rotation.y *= 0.3
+	rotation.x *= pow(abs(rotation.x), 1.0)
+	rotation.y *= pow(abs(rotation.y), 1.0)
+	rotation.z *= pow(abs(rotation.z), 1.0)
+	
+	rotation *= 0.7
+	
+#	rotation.z *= 1.2
 	translation.y *= abs(pow(translation.y, 1.0))
 	translation.x *= 1.5
+	
+#	translation *= 0.4
 	
 	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
 	
@@ -67,7 +75,8 @@ func _process(delta):
 	var servo_pwm = $ServoPWMSlider.value
 	$ServoCurrentPWMLabel.text = str(servo_pwm)
 	
-	translation *= Vector3(1.0, 5.0, 3.0)
+	translation *= Vector3(1.0, 2.5, 2.5)
+#	translation *= Vector3(1.0, 5.0, 3.0)
 	$InputLabel.text = str(translation)
 	
 	if ready:
