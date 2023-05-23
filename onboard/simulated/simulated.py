@@ -19,6 +19,7 @@ def set_pin_pwm(number, value):
 
 
 async def flush_pin_pwms():
+    print()  # add separation in terminal between groups of PWM setting
     pass
     # TODO: implement sending to simulation
 

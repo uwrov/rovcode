@@ -29,6 +29,7 @@ async def server_handler(_websocket):
         core.translation = data['translation']
         core.rotation = data['rotation']
         core.direct_motors = data['direct_motors']
+        core.servo_pwm = data['servo_pwm']
 
 
 async def notify_sensor_update():

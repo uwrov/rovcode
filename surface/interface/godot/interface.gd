@@ -49,7 +49,35 @@ func _process(delta):
 		Input.get_axis("yaw_right", "yaw_left")
 	)
 	
+#	rotation.y *= 0.3
+	rotation.x *= pow(abs(rotation.x), 1.0)
+	rotation.y *= pow(abs(rotation.y), 1.0)
+	rotation.z *= pow(abs(rotation.z), 1.0)
+	
+	rotation *= 0.7
+	
+#	rotation.z *= 1.2
+	translation.y *= abs(pow(translation.y, 1.0))
+	translation.x *= 1.5
+	
+#	translation *= 0.4
+	
 	$InputLabel.text = "%s : %s" % [str(translation), str(rotation)]
+	
+	$"%TranslationXValue".text = str("%0.3f" % translation.x)
+	$"%TranslationYValue".text = str("%0.3f" % translation.y)
+	$"%TranslationZValue".text = str("%0.3f" % translation.z)
+	
+	$"%RotationXValue".text = str("%0.3f" % rotation.x)
+	$"%RotationYValue".text = str("%0.3f" % rotation.y)
+	$"%RotationZValue".text = str("%0.3f" % rotation.z)
+	
+	var servo_pwm = $ServoPWMSlider.value
+	$ServoCurrentPWMLabel.text = str(servo_pwm)
+	
+	translation *= Vector3(1.0, 2.5, 2.5)
+#	translation *= Vector3(1.0, 5.0, 3.0)
+	$InputLabel.text = str(translation)
 	
 	if ready:
 		var data = {
@@ -57,6 +85,7 @@ func _process(delta):
 			"translate": Input.get_axis("move_left", "move_right"),
 			"translation": [translation.x, translation.y * 5.0, translation.z * 3.0],
 			"rotation": [rotation.x, rotation.y, rotation.z],
-			"direct_motors": $DirectMotorsButton.pressed
+			"direct_motors": $DirectMotorsButton.pressed,
+			"servo_pwm": int(servo_pwm),
 		}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())
