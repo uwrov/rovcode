@@ -62,6 +62,9 @@ async def update_controls():
             [translation[0], translation[1], translation[2], rotation[0], rotation[1], rotation[2]]
         )
 
+    if (False): # PIDF code - doesn't work, just a rudimentary version
+        accel_gyro_values.manipulate_gyro_accel_values(accelerometer, gyroscope)
+
     for i in range(len(powers)):
         powers[i] = powers[i] * thruster_config[i]['direction']
 
@@ -93,5 +96,3 @@ async def update_controls():
         'value': servo_pwm,
     })
 
-    if (False): # PIDF code - doesn't work, just a rudimentary version
-        accel_gyro_values.manipulate_gyro_accel_values(accelerometer, gyroscope)
