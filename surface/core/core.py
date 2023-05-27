@@ -13,7 +13,7 @@ rotation = [0.0, 0.0, 0.0]
 
 direct_motors = False
 
-servo_pin = 26
+servo_pin = 9
 servo_pwm = 1500
 
 pin_pwms = None
