@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from .rov_config import thruster_config
-import accel_gyro_values
+from .accel_gyro_values import manipulate_gyro_accel
 
 from .motor_power_translator import convert_force_and_torque_to_motor_powers
 from .pwm_translator import convert_motor_powers_to_pwms
