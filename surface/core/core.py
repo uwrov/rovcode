@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from .rov_config import thruster_config
+import accel_gyro_values
 
 from .motor_power_translator import convert_force_and_torque_to_motor_powers
 from .pwm_translator import convert_motor_powers_to_pwms
@@ -61,6 +62,9 @@ async def update_controls():
             [translation[0], translation[1], translation[2], rotation[0], rotation[1], rotation[2]]
         )
 
+    if (False): # PIDF code - doesn't work, just a rudimentary version
+        accel_gyro_values.manipulate_gyro_accel_values(accelerometer, gyroscope)
+
     for i in range(len(powers)):
         powers[i] = powers[i] * thruster_config[i]['direction']
 
@@ -91,3 +95,4 @@ async def update_controls():
         'number': servo_pin,
         'value': servo_pwm,
     })
+
