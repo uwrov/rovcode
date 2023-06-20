@@ -64,7 +64,7 @@ thruster_config = [
         # 'pin': 23,
         'model': 't-100',
         # 'direction': 1,
-        'direction': -1,
+        'direction': 1,
         'letter': 'F',
     },
     {
