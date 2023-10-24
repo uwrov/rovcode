@@ -1,6 +1,8 @@
 # ROV Code
 ## Setup
-Install Godot, and make sure to add Godot to your path (or whatever the equivalent is on your operating system). 
+Install Godot, and make sure to add Godot to your path (or whatever the equivalent is on your operating system).
+
+This project is currently made with Godot 3.5.1, standard version (Mono/C# not needed): https://github.com/godotengine/godot/releases/tag/3.5.1-stable
 
 If you are getting a 'file not found' error around subprocesses, recheck that Godot is in your path. Otherwise contact Alnis with other errors. 
 
