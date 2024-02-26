@@ -1,5 +1,10 @@
 # ROV Code
 ## Setup
+
+**Warning: if you are connected via ethernet to a router without internet connection (i.e., have the computer as a part of the surface station), you may run into weird errors, even if you have a network connection via a separate wifi connection. Therefore, make sure you are connected to the internet, and not connected to any networks without internet, to avoid issues during setup.**
+
+### Godot Installation
+
 Install Godot, and make sure to add Godot to your path (or whatever the equivalent is on your operating system).
 
 This project is currently made with Godot 3.5.1, standard version (Mono/C# not needed): https://github.com/godotengine/godot/releases/tag/3.5.1-stable
@@ -14,12 +19,32 @@ On Windows, look for your 'Environment Variables' setting menu, click on the Pat
 
 On Linux... good luck, but you probably know what you're doing. (Please add documentation if you figure it out.)
 
+### Python Installation
+
+Make sure Python is installed & added to path.
+
+Also, make sure Visual Studio Code's Python package is installed.
+
+macOS: TODO
+
+Windows:
+* Get installer (3.12.2) from here: https://www.python.org/downloads/release/python-3122/
+* Make sure "Add python.exe to path" is checked
+* Default installation is OK
+* Alternatively... you can type `python` into a terminal and it will launch the Microsoft Store, where you can try pressing "Get" for python. Maybe that will work (it sometimes throws an error).
+
+Linux: TODO
+
+Also make sure you have the following packages:
+
+* numpy: `pip3 install numpy`
+* websockets `pip3 install websockets`
+
 Test websocket connection locally:
 
 ```python3 -m websockets ws://localhost:8001/```
 
-install numpy (pip3 install numpy)
-install websockets (pip3 install websockets)
+### Other Notes
 
 To get Logitech F310 controller working with macOS, check this out:
 https://gist.github.com/jackblk/8138827afd986f30cf9d26647e8448e1
@@ -31,6 +56,13 @@ Notes:
 - TODO: need to state what packages are needed
 
 ## Running the System
+
+Connecting to the physical ROV:
+`ssh pi@192.168.0.99 -p 69`
+Password: `raspberry` (yes this is the default)
+
+
+
 ### Physical ROV
 On the ROV, use the terminal to run launch_onboard_physical.py. The command is `python3 launch_onboard_physical.py`. (Run this command from the directory of the file.)
 On the surface, open the repository in VSCode and open launch_surface.py. Press the Play button to run the file. 
