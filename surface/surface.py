@@ -52,7 +52,7 @@ async def produce_outgoing_commands_to_rov(websocket):
     while True:
         await asyncio.gather(
             update_controls_and_send_to_rov(websocket),
-            asyncio.sleep(0.01)  # limit to 100 summaries per second
+            asyncio.sleep(0.1)  # limit to 100 summaries per second
         )
 
 

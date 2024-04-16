@@ -30,7 +30,8 @@ thruster_config = [
         'name': 'forward_left',
         'location': [0.15320, -0.28866, -0.04400],
         'orientation': [0.0, -1.0, 0.0],
-        'pin': 20,
+        'pin': 19,  # 2024-04-15
+        # 'pin': 20,
         'model': 't-100',
         'direction': -1,
         'letter': 'A',
@@ -51,16 +52,18 @@ thruster_config = [
         'pin': 26,
         # 'pin': 24,
         'model': 't-200',
+        'direction': 1,  # 2024-04-15
         # 'direction': -1,
         # 'direction': 1,
-        'direction': -1,
+        # 'direction': -1,
         'letter': 'E',
     },
     {
         'name': 'sideways_top',
         'location': [0.00066, -0.33600, 0.14370],
         'orientation': [1.0, 0.0, 0.0],
-        'pin': 19,
+        'pin': 20,  # 2024-04-15
+        # 'pin': 19,
         # 'pin': 23,
         'model': 't-100',
         # 'direction': 1,
