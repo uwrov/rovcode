@@ -97,6 +97,13 @@ func _process(delta):
 		
 		rotation += rotation_boost
 	
+	var manipulator_pwm = 1500
+	if Input.is_action_pressed("manipulator_close"):
+		manipulator_pwm -= 50
+	if Input.is_action_pressed("manipulator_open"):
+		manipulator_pwm += 100
+	
+	
 #	rotation.y *= 0.3
 	rotation.x *= pow(abs(rotation.x), 1.0)
 	rotation.y *= pow(abs(rotation.y), 1.0)
@@ -123,7 +130,8 @@ func _process(delta):
 	$"%RotationYValue".text = str("%0.3f" % rotation.y)
 	$"%RotationZValue".text = str("%0.3f" % rotation.z)
 	
-	var servo_pwm = $ServoPWMSlider.value
+#	var servo_pwm = $ServoPWMSlider.value
+	var servo_pwm = manipulator_pwm
 	$ServoCurrentPWMLabel.text = str(servo_pwm)
 	
 	translation *= Vector3(1.0, 2.5, 2.5)

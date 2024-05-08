@@ -62,9 +62,10 @@ thruster_config = [
         'name': 'sideways_top',
         'location': [0.00066, -0.33600, 0.14370],
         'orientation': [1.0, 0.0, 0.0],
-        'pin': 20,  # 2024-04-15
+        # 'pin': 20,  # 2024-04-15
         # 'pin': 19,
         # 'pin': 23,
+        'pin': 6,
         'model': 't-100',
         # 'direction': 1,
         'direction': 1,
