@@ -34,6 +34,8 @@ func _connected(proto = ""):
 var suspicous_gyro_values = 0
 
 var gravity_calibration_rotation = Vector3.ZERO
+var world_gravity_calibration_rotation = Vector3.ZERO
+var yaw_at_gravity_calibration = 0.0
 
 func _on_data():
 	var data = _client.get_peer(1).get_packet().get_string_from_utf8()
@@ -91,11 +93,34 @@ func _on_data():
 		suspicous_gyro_values = 0
 		$LabelDiff.modulate = Color.white
 	
-#	if Input.is_action_pressed("calibrate_gravity"):
-#		var imu_gravity = Vector3(acc[0], acc[1], acc[2])
+	$LabelGravityCalibrationState.text = str(gravity_calibration_rotation)
+	
+	if Input.is_action_pressed("calibrate_gravity"):
+		# x, y, z in Onshape/Z-up goes to x, z, -y in Godot/Y-up
+		var imu_gravity = Vector3(acc[0], acc[2], -acc[1])
+		$LabelGravityCalibrationState.text += "\n" + str(imu_gravity)
+		var TARGET_GRAVITY = Vector3(0.0, -1.0, 0.0)
+		var axis = imu_gravity.cross(TARGET_GRAVITY).normalized()
+		gravity_calibration_rotation = axis * imu_gravity.angle_to(TARGET_GRAVITY)
+		
+#		# transform from local to global gravity direction
+#		world_gravity_calibration_rotation = rov_orientation.xform_inv(gravity_calibration_rotation)
+#		yaw_at_gravity_calibration = rov_orientation.get_euler().y * 0.0
+		yaw_at_gravity_calibration = -PI / 2
 	
 	if gravity_calibration_rotation:
-		rov_orientation = rov_orientation.rotated(gravity_calibration_rotation, gravity_calibration_rotation.length())
+#		$LabelGravityCalibrationState.text += "\n" + gravity_calibration_rotation
+		$LabelGravityCalibrationState.text += "\n" + str(rov_orientation.get_euler())
+		
+#		# apply the orientation change in local space?
+#		var applied = rov_orientation.xform(world_gravity_calibration_rotation)
+		var yaw_now = rov_orientation.get_euler().y
+		var applied = gravity_calibration_rotation.rotated(Vector3(0.0, 1.0, 0.0), yaw_now - yaw_at_gravity_calibration)
+		
+		rov_orientation = rov_orientation.rotated(applied.normalized(), -applied.length())
+		
+#		rov_orientation = rov_orientation.rotated(gravity_calibration_rotation.normalized(), -gravity_calibration_rotation.length())
+		$LabelGravityCalibrationState.text += "\n" + str(rov_orientation.get_euler())
 	
 	
 	var euler = rov_orientation.get_euler()
