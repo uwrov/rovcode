@@ -45,8 +45,20 @@ func _on_data():
 	$Label.text = str(gyro)
 	$Label.text = "%.5f %.5f %.5f\n%.5f %.5f %.5f %.5f" % [acc[0], acc[1], acc[2], gyro[0], gyro[1], gyro[2], gyro[3]]
 #	rov_orientation = Basis(Vector3(gyro[0], gyro[1], gyro[2]) * TAU / 360.0)
-	rov_orientation = Basis(Quat(gyro[0], gyro[1], gyro[2], gyro[3]))
-	rov_orientation = rov_orientation.rotated(Vector3(0.0, -1.0, 0.0), 45.0 * PI / 180.0)
+#	rov_orientation = Basis(Quat(gyro[0], gyro[1], gyro[2], gyro[3]))
+#	rov_orientation = Basis(Quat(gyro[0], gyro[2], gyro[1], gyro[3]))  # roll correct
+#	rov_orientation = Basis(Quat(gyro[1], gyro[2], gyro[0], gyro[3]))  # worse
+#	rov_orientation = Basis(Quat(gyro[0], gyro[2], -gyro[1], gyro[3]))
+
+	rov_orientation = Basis(Quat(gyro[0], gyro[2], gyro[1], gyro[3]))
+	
+	var old_x = rov_orientation.x
+	var old_y = rov_orientation.y
+	rov_orientation.x = old_y
+	rov_orientation.y = old_x
+	
+	
+#	rov_orientation = rov_orientation.rotated(Vector3(0.0, -1.0, 0.0), 45.0 * PI / 180.0)
 	$Label4.text = str(rov_orientation)
 	$"%ROVProxy".transform.basis = rov_orientation
 	
