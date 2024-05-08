@@ -33,6 +33,8 @@ func _connected(proto = ""):
 
 var suspicous_gyro_values = 0
 
+var gravity_calibration_rotation = Vector3.ZERO
+
 func _on_data():
 	var data = _client.get_peer(1).get_packet().get_string_from_utf8()
 	print("Got data from server: ", data)
@@ -89,7 +91,11 @@ func _on_data():
 		suspicous_gyro_values = 0
 		$LabelDiff.modulate = Color.white
 	
+#	if Input.is_action_pressed("calibrate_gravity"):
+#		var imu_gravity = Vector3(acc[0], acc[1], acc[2])
 	
+	if gravity_calibration_rotation:
+		rov_orientation = rov_orientation.rotated(gravity_calibration_rotation, gravity_calibration_rotation.length())
 	
 	
 	var euler = rov_orientation.get_euler()
@@ -124,38 +130,57 @@ func _process(delta):
 	
 	# TODO: should this be "just pressed" ?
 	if Input.is_action_pressed("save_orientation"):
-		$LabelSASState.text = "SAS state: saving"
-		pass
-#		target_orientation = rov_orientation
+#		$LabelSASState.text = "SAS state: saving"
+#		pass
+		target_orientation = rov_orientation
 	
 	if Input.is_action_pressed("hold_orientation"):
-		$LabelSASState.text = "SAS state: holding - "
-		var y_ctrl = -rov_orientation.get_euler().y
-		y_ctrl *= 0.4
-		y_ctrl = clamp(y_ctrl, -0.2, 0.2)
-		rotation_boost += Vector3(0.0, 0.0, y_ctrl)
-		$LabelSASState.text += str(y_ctrl)
-		pass
-#		var rotation_boost = Vector3.ZERO
-#
-#		var x_displacement = rov_orientation.x.cross(target_orientation.x)
-#		var y_displacement = rov_orientation.y.cross(target_orientation.y)
-#		var z_displacement = rov_orientation.z.cross(target_orientation.z)
-#
+#		$LabelSASState.text = "SAS state: holding - "
+#		var y_ctrl = -rov_orientation.get_euler().y
+#		y_ctrl *= 0.4
+#		y_ctrl = clamp(y_ctrl, -0.2, 0.2)
+#		rotation_boost += Vector3(0.0, 0.0, y_ctrl)
+#		$LabelSASState.text += str(y_ctrl)
+#		pass
+		
+		
+		rotation_boost = Vector3.ZERO
+
+		var x_displacement = rov_orientation.x.cross(target_orientation.x)
+		var y_displacement = rov_orientation.y.cross(target_orientation.y)
+		var z_displacement = rov_orientation.z.cross(target_orientation.z)
+
 #		var temp = x_displacement
 #		x_displacement = z_displacement
 #		z_displacement = temp
-#
+
 #		x_displacement *= -1
 #		y_displacement *= -1
 #		z_displacement *= -1
-#
-#		var proportional = x_displacement + y_displacement + z_displacement
-#
+
+		# TODO: fix proportional magintued if difference is more than 180 degrees
+
+		var proportional: Vector3 = x_displacement + y_displacement + z_displacement
+		
+		
+		
+		var diff = (
+			abs(rov_orientation.x.angle_to(target_orientation.x)) +
+			abs(rov_orientation.y.angle_to(target_orientation.y)) + 
+			abs(rov_orientation.z.angle_to(target_orientation.z))
+		)
+		
+		proportional = proportional.normalized() * diff
+	
+
 #		rotation_boost += proportional * 1.0
-#
-#		$Label3.text = "%.5f %.5f %.5f" % [rotation_boost.x, rotation_boost.y, rotation_boost.z]
-#
+		rotation_boost = Vector3(proportional.x, -proportional.z, proportional.y) * .2
+		rotation_boost.x = clamp(rotation_boost.x, -0.2, 0.2)
+		rotation_boost.y = clamp(rotation_boost.y, -0.2, 0.2)
+		rotation_boost.z = clamp(rotation_boost.z, -0.2, 0.2)
+
+		$Label3.text = "%.5f %.5f %.5f" % [rotation_boost.x, rotation_boost.y, rotation_boost.z]
+
 #		rotation += rotation_boost
 	
 	var manipulator_pwm = 1500
