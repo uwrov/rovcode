@@ -96,3 +96,17 @@ This file initializes the core, interface, and task code. It then starts the app
 
 ### Overview of `onboard.py`
 This file initializes onboard communication. This also parses commands and forwards them to the ROV. The code here is shared for physical and simulated ROVs. 
+
+
+
+
+
+Input in z-up space, output in Godot visual
+Control stick yaw left (+z rotation) -> model visually moves in -x rotation
+Control stick roll left (+y rotation) -> model visually moves in -z rotation
+
+
+
+Onshape space:
++x rotation -> -z
++z rotation -> -x result

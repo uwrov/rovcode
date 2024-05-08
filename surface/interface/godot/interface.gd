@@ -57,6 +57,8 @@ func _on_data():
 	rov_orientation.x = old_y
 	rov_orientation.y = old_x
 	
+	rov_orientation = rov_orientation.rotated(Vector3(0.0, 0.0, -1.0), PI / 2)
+	
 	
 #	rov_orientation = rov_orientation.rotated(Vector3(0.0, -1.0, 0.0), 45.0 * PI / 180.0)
 	$Label4.text = str(rov_orientation)

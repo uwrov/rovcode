@@ -1,13 +1,22 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://interface.gd" type="Script" id=1]
+[ext_resource path="res://objects/rov22/rov22.tscn" type="PackedScene" id=2]
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 0.02, 0.02, 4 )
+
+[sub_resource type="SpatialMaterial" id=4]
+flags_unshaded = true
+albedo_color = Color( 0, 1, 0, 1 )
 
 [sub_resource type="SpatialMaterial" id=1]
-flags_transparent = true
-albedo_color = Color( 1, 1, 1, 0.458824 )
-
-[sub_resource type="SpatialMaterial" id=2]
-albedo_color = Color( 1, 0.054902, 0.054902, 1 )
+flags_unshaded = true
+albedo_color = Color( 0, 0, 1, 1 )
 
 [node name="Interface" type="Control"]
 anchor_right = 1.0
@@ -246,21 +255,27 @@ align = 2
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.57416 )
 
-[node name="Spatial" type="Spatial" parent="."]
+[node name="Base" type="Spatial" parent="."]
 
-[node name="ROVProxy" type="Spatial" parent="Spatial"]
+[node name="ROVProxy" type="Spatial" parent="Base"]
 unique_name_in_owner = true
 
-[node name="ROVProxy" type="CSGBox" parent="Spatial/ROVProxy"]
+[node name="ROV22" parent="Base/ROVProxy" instance=ExtResource( 2 )]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, -1.65092 )
+
+[node name="Axes" type="Spatial" parent="Base"]
+
+[node name="AxisX" type="MeshInstance" parent="Base/Axes"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 2, 0, -1.19209e-07 )
+material_override = SubResource( 3 )
+mesh = SubResource( 2 )
+
+[node name="AxisY" type="MeshInstance" parent="Base/Axes"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0 )
+material_override = SubResource( 4 )
+mesh = SubResource( 2 )
+
+[node name="AxisZ" type="MeshInstance" parent="Base/Axes"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 material_override = SubResource( 1 )
-
-[node name="CSGBox" type="CSGBox" parent="Spatial/ROVProxy"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.977042, -0.976153 )
-height = 0.305062
-depth = 0.191665
-
-[node name="CSGBox2" type="CSGBox" parent="Spatial/ROVProxy"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.971094, 0.973785 )
-material_override = SubResource( 2 )
-height = 0.305062
-depth = 0.191665
+mesh = SubResource( 2 )
