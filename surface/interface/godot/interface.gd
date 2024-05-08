@@ -31,6 +31,8 @@ func _connected(proto = ""):
 	ready = true
 	
 
+var suspicous_gyro_values = 0
+
 func _on_data():
 	var data = _client.get_peer(1).get_packet().get_string_from_utf8()
 	print("Got data from server: ", data)
@@ -43,25 +45,56 @@ func _on_data():
 	# IMU: x left, y forward, z up
 	# ROV: 
 	$Label.text = str(gyro)
-	$Label.text = "%.5f %.5f %.5f\n%.5f %.5f %.5f %.5f" % [acc[0], acc[1], acc[2], gyro[0], gyro[1], gyro[2], gyro[3]]
-#	rov_orientation = Basis(Vector3(gyro[0], gyro[1], gyro[2]) * TAU / 360.0)
-#	rov_orientation = Basis(Quat(gyro[0], gyro[1], gyro[2], gyro[3]))
-#	rov_orientation = Basis(Quat(gyro[0], gyro[2], gyro[1], gyro[3]))  # roll correct
-#	rov_orientation = Basis(Quat(gyro[1], gyro[2], gyro[0], gyro[3]))  # worse
-#	rov_orientation = Basis(Quat(gyro[0], gyro[2], -gyro[1], gyro[3]))
-
+	if gyro[0] == null:
+		$LabelDebug.text = str(gyro)
+		return
+	var gyrotext = "%.5f %.5f %.5f\n%.5f %.5f %.5f %.5f" % [acc[0], acc[1], acc[2], gyro[0], gyro[1], gyro[2], gyro[3]]
+	$Label.text = gyrotext
+	
+	if not acc[0]:
+		$LabelDebug.text = gyrotext
+	
+	var prev_rov_orientation = rov_orientation
+	
+	# convert quaternion from IMU to basis
 	rov_orientation = Basis(Quat(gyro[0], gyro[2], gyro[1], gyro[3]))
 	
+	# swap yaw and pitch
 	var old_x = rov_orientation.x
 	var old_y = rov_orientation.y
 	rov_orientation.x = old_y
 	rov_orientation.y = old_x
 	
+	# rotate to correct "up" direction
 	rov_orientation = rov_orientation.rotated(Vector3(0.0, 0.0, -1.0), PI / 2)
 	
+	# rov_orientation is now in y-up space
 	
-#	rov_orientation = rov_orientation.rotated(Vector3(0.0, -1.0, 0.0), 45.0 * PI / 180.0)
-	$Label4.text = str(rov_orientation)
+	
+	var diff = (
+		abs(prev_rov_orientation.x.angle_to(rov_orientation.x)) +
+		abs(prev_rov_orientation.y.angle_to(rov_orientation.y)) + 
+		abs(prev_rov_orientation.z.angle_to(rov_orientation.z))
+	)
+	
+	$LabelDiff.text = str(diff)
+	
+	# TODO: for the future: what if we get a bad value on the 10th loop?
+	if diff > 1.0 and suspicous_gyro_values < 10:
+		rov_orientation = prev_rov_orientation
+		suspicous_gyro_values += 1
+		$LabelDebug2.text = "Last suspicious count: " + str(suspicous_gyro_values)
+		$LabelDiff.modulate = Color.red
+	else:
+		suspicous_gyro_values = 0
+		$LabelDiff.modulate = Color.white
+	
+	
+	
+	
+	var euler = rov_orientation.get_euler()
+
+	$Label4.text = "Euler X: " + str(euler.x) + "\nEuler Y: " + str(euler.y) + "\nEuler Z: " + str(euler.z)
 	$"%ROVProxy".transform.basis = rov_orientation
 	
 
@@ -85,31 +118,45 @@ func _process(delta):
 		Input.get_axis("yaw_right", "yaw_left")
 	)
 	
-	if Input.is_action_just_pressed("save_orientation"):
-		target_orientation = rov_orientation
+	$LabelSASState.text = "SAS state: inactive"
+	
+	var rotation_boost = Vector3.ZERO
+	
+	# TODO: should this be "just pressed" ?
+	if Input.is_action_pressed("save_orientation"):
+		$LabelSASState.text = "SAS state: saving"
+		pass
+#		target_orientation = rov_orientation
 	
 	if Input.is_action_pressed("hold_orientation"):
-		var rotation_boost = Vector3.ZERO
-		
-		var x_displacement = rov_orientation.x.cross(target_orientation.x)
-		var y_displacement = rov_orientation.y.cross(target_orientation.y)
-		var z_displacement = rov_orientation.z.cross(target_orientation.z)
-		
-		var temp = x_displacement
-		x_displacement = z_displacement
-		z_displacement = temp
-		
-		x_displacement *= -1
-		y_displacement *= -1
-		z_displacement *= -1
-		
-		var proportional = x_displacement + y_displacement + z_displacement
-		
-		rotation_boost += proportional * 1.0
-		
-		$Label3.text = "%.5f %.5f %.5f" % [rotation_boost.x, rotation_boost.y, rotation_boost.z]
-		
-		rotation += rotation_boost
+		$LabelSASState.text = "SAS state: holding - "
+		var y_ctrl = -rov_orientation.get_euler().y
+		y_ctrl *= 0.4
+		y_ctrl = clamp(y_ctrl, -0.2, 0.2)
+		rotation_boost += Vector3(0.0, 0.0, y_ctrl)
+		$LabelSASState.text += str(y_ctrl)
+		pass
+#		var rotation_boost = Vector3.ZERO
+#
+#		var x_displacement = rov_orientation.x.cross(target_orientation.x)
+#		var y_displacement = rov_orientation.y.cross(target_orientation.y)
+#		var z_displacement = rov_orientation.z.cross(target_orientation.z)
+#
+#		var temp = x_displacement
+#		x_displacement = z_displacement
+#		z_displacement = temp
+#
+#		x_displacement *= -1
+#		y_displacement *= -1
+#		z_displacement *= -1
+#
+#		var proportional = x_displacement + y_displacement + z_displacement
+#
+#		rotation_boost += proportional * 1.0
+#
+#		$Label3.text = "%.5f %.5f %.5f" % [rotation_boost.x, rotation_boost.y, rotation_boost.z]
+#
+#		rotation += rotation_boost
 	
 	var manipulator_pwm = 1500
 	if Input.is_action_pressed("manipulator_close"):
@@ -125,6 +172,8 @@ func _process(delta):
 	
 	rotation *= 0.7
 	rotation.y *= 0.4
+	
+	rotation += rotation_boost
 	
 #	rotation.z *= 1.2
 	translation.y *= abs(pow(translation.y, 1.0))
