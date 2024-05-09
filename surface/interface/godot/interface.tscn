@@ -67,17 +67,6 @@ margin_right = -280.0
 margin_bottom = -31.0
 text = "SAS state: uninit"
 
-[node name="LabelGravityCalibrationState" type="Label" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -463.0
-margin_top = -17.0
-margin_right = -280.0
-margin_bottom = -3.0
-text = "Gravity: uninit"
-
 [node name="Label3" type="Label" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
