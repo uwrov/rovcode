@@ -154,9 +154,9 @@ text = "CURRENT PWM"
 
 [node name="TranslationInfoContainer" type="PanelContainer" parent="."]
 margin_left = 224.0
-margin_top = 326.0
+margin_top = 418.0
 margin_right = 398.0
-margin_bottom = 408.0
+margin_bottom = 500.0
 __meta__ = {
 "_edit_group_": true
 }
@@ -227,9 +227,9 @@ align = 2
 
 [node name="RotationInfoContainer" type="PanelContainer" parent="."]
 margin_left = 37.0
-margin_top = 326.0
+margin_top = 418.0
 margin_right = 211.0
-margin_bottom = 408.0
+margin_bottom = 500.0
 __meta__ = {
 "_edit_group_": true
 }
