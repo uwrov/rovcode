@@ -61,6 +61,8 @@ Connecting to the physical ROV:
 `ssh pi@192.168.0.99 -p 69`
 Password: `raspberry` (yes this is the default)
 
+UPDATE JUNE 2024: 'ssh pi@192.168.123.100 -p 69' 
+
 Note on cameras:
 ```sh
 pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -c exposure_auto=1,exposure_absolute=300,brightness=0,gain=100
