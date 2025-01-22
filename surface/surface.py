@@ -32,14 +32,14 @@ async def serve():
 
 # handles incoming ("consumer") and outgoing ("producer") communication with ROV
 # see: https://websockets.readthedocs.io/en/stable/howto/patterns.html
-async def rov_server_handler(websocket):
+async def rov_server_handler(websocket: ClientConnection):
     await asyncio.gather(
         consume_incoming_data_from_rov(websocket),
         produce_outgoing_commands_to_rov(websocket)
     )
 
 
-async def consume_incoming_data_from_rov(websocket):
+async def consume_incoming_data_from_rov(websocket: ClientConnection):
     async for message in websocket:
         data = json.loads(message)
         if data['type'] == 'sensor_summary':
@@ -48,7 +48,7 @@ async def consume_incoming_data_from_rov(websocket):
             print(f'Invalid type {data.type} for message: {message}')
 
 
-async def produce_outgoing_commands_to_rov(websocket):
+async def produce_outgoing_commands_to_rov(websocket: ClientConnection):
     while True:
         await asyncio.gather(
             update_controls_and_send_to_rov(websocket),
@@ -56,7 +56,7 @@ async def produce_outgoing_commands_to_rov(websocket):
         )
 
 
-async def update_controls_and_send_to_rov(websocket):
+async def update_controls_and_send_to_rov(websocket: ClientConnection):
     await core.update_controls()
     await websocket.send(json.dumps({
         'type': 'set_pin_pwms',

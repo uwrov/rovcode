@@ -5,15 +5,11 @@ import os
 
 import websockets
 
-rov, websocket_uri = None, None
-
 
 def main():
-    # os.system('clear')
     print('onboard client starting')
-    setup_using_command_line_args()
-    rov.init()
-    asyncio.run(client_handler())
+    rov, websocket_uri = setup_using_command_line_args()
+    asyncio.run(client_handler(websocket_uri))
 
 
 # allows file to be run with arguments
@@ -26,21 +22,24 @@ def setup_using_command_line_args():
                             help='websocket\'s ip and port, e.g. localhost:8001')
     args = arg_parser.parse_args()
 
-    global rov, websocket_uri
     if args.physical:
-        import physical.physical as rov
+        import physical.physical as ROV
     else:
-        import simulated.simulated as rov
+        import simulated.simulated as ROV
+
+    rov = ROV()
     websocket_uri = f'ws://{args.websocket}'
+    
+    return rov, websocket_uri
 
 
 # connect to surface station
-async def client_handler():
+async def client_handler(websocket_uri: str, rov: ROV):
     async for websocket in websockets.connect(websocket_uri):
         try:
             await asyncio.gather(
-                consumer_handler(websocket),
-                producer_handler(websocket)
+                consumer_handler(websocket, rov),
+                producer_handler(websocket, rov)
             )
         except websockets.ConnectionClosed:
             print('onboard: websockets.ConnectionClosed - retrying...')
@@ -49,7 +48,7 @@ async def client_handler():
 
 
 # incoming command handling (instructions for ROV)
-async def consumer_handler(websocket):
+async def consumer_handler(websocket: ClientConnection, rov: ROV):
     async for message in websocket:
         data = json.loads(message)
         if data['type'] == 'set_pin_pwms':
@@ -61,22 +60,22 @@ async def consumer_handler(websocket):
 
 
 # outgoing data handling (sensor readings)
-async def producer_handler(websocket):
+async def producer_handler(websocket: ClientConnection, rov: ROV):
     while True:
         await asyncio.gather(
-            send_onboard_digest(websocket),
+            send_onboard_digest(websocket, rov),
             asyncio.sleep(0.1)  # limit to 10 summaries per second
         )
 
 
 # TODO: create hardware-agnostic sensor reading system
 # currently requires hardcoding sensor pins, protocols, etc.
-async def send_onboard_digest(websocket):
-    await rov.poll_sensors()
+async def send_onboard_digest(websocket: ClientConnection, rov: ROV):
+    await gyro, accel = rov.poll_sensors()
     await websocket.send(json.dumps({
         'type': 'sensor_summary',
-        'accelerometer': rov.accelerometer,
-        'gyroscope': rov.gyroscope,
+        'accelerometer': accel,
+        'gyroscope': gyro,
     }))
 
 
