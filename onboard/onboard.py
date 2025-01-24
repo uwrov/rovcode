@@ -23,9 +23,9 @@ def setup_using_command_line_args():
     args = arg_parser.parse_args()
 
     if args.physical:
-        import physical.physical as ROV
+        from physical.physical import ROV
     else:
-        import simulated.simulated as ROV
+        from simulated.simulated import ROV
 
     rov = ROV()
     websocket_uri = f'ws://{args.websocket}'

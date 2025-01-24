@@ -4,12 +4,10 @@ import websockets
 import asyncio
 import json
 
-websocket = None
-
-
 class Interface():
     def __init__(_core, _task):
         self.core, self.task = _core, _task
+        self.websocket = None
 
         uri = 'ws://localhost:8002'
         cwd = (pathlib.Path(__file__).parent / 'godot').resolve()
