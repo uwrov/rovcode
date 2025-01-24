@@ -4,38 +4,35 @@ import websockets
 import asyncio
 import json
 
-websocket = None
+class Interface():
+    def __init__(self, _core: 'Core'):
+        self.core = _core
+        self.task = None
+        self.websocket = None
 
-def notify_new_sensor_data():
-    print(f'accelerometer: {core.accelerometer}, gyro: {core.gyroscope}')
+        uri = 'ws://localhost:8002'
+        cwd = (pathlib.Path(__file__).parent / 'godot').resolve()
+        subprocess.Popen(['godot', '--quiet', 'interface.tscn', '-u', uri], cwd=cwd,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-def init(_core, _task):
-    global core, task
-    core, task = _core, _task
-
-    uri = 'ws://localhost:8002'
-    cwd = (pathlib.Path(__file__).parent / 'godot').resolve()
-    subprocess.Popen(['godot', '--quiet', 'interface.tscn', '-u', uri], cwd=cwd,
-                     stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-
-
-async def server_handler(_websocket):
-    global websocket
-    websocket = _websocket
-    async for message in websocket:
-        data = json.loads(str(message)[2:-1])
-        result = json.dumps(data)
-        core.translate_x = data['translate']
-        core.translation = data['translation']
-        core.rotation = data['rotation']
-        core.direct_motors = data['direct_motors']
-        core.servo_pwm = data['servo_pwm']
+    def set_task(self, task: 'Task'):
+        self.task = task
 
 
-async def notify_sensor_update():
-    if websocket == None:
-        return
-    await websocket.send(json.dumps({
-        'accelerometer': core.accelerometer,
-        'gyroscope': core.gyroscope
-    }))
+    def notify_new_sensor_data(self):
+        print(f'accelerometer: {self.core.accelerometer}, gyro: {self.core.gyroscope}')
+
+    async def server_handler(self, _websocket):
+        self.websocket = _websocket
+        async for message in self.websocket:
+            data = json.loads(str(message)[2:-1])
+            result = json.dumps(data)
+            await self.core.consume_interface_websocket(data['translate'], data['translation'], data['rotation'], data['direct_motors'], data['servo_pwm'])
+
+
+    async def notify_sensor_update(self):
+        if self.websocket != None:
+            await self.websocket.send(json.dumps({
+                'accelerometer': self.core.accelerometer,
+                'gyroscope': self.core.gyroscope
+            }))
