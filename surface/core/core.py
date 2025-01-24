@@ -14,8 +14,8 @@ AMPLITUDE = 400
 RAMP_LIMIT = (TIME_PER_CYCLE / TIME_TO_RAMP) * AMPLITUDE
 
 class Core():
-    def __init__(_interface, _task):
-        self.interface, self.task = _interface, _task
+    def __init__(self):
+        self.interface, self.task = None, None
 
         self.translate_x = 0.0
         self.translation = [0.0, 0.0, 0.0]
@@ -28,12 +28,18 @@ class Core():
 
         self.prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
 
-    async def update_sensors(summary_data):
+    def set_interface(self, interface: 'Interface'):
+        self.interface = interface
+
+    def set_task(self, task: 'Task'):
+        self.task = task
+
+    async def update_sensors(self, summary_data):
         self.accelerometer = summary_data['accelerometer']
         self.gyroscope = summary_data['gyroscope']
         await self.interface.notify_sensor_update()
 
-    async def update_controls():
+    async def update_controls(self):
         trans = self.translation
         rot = self.rotation
         powers = [trans[0], trans[1], trans[2], rot[0], rot[1], rot[2]]
@@ -73,7 +79,7 @@ class Core():
 
         return pin_pwms
 
-    async def consume_interface_websocket(translate_x, translation, rotation, direct_motors, servo_pwm):
+    async def consume_interface_websocket(self, translate_x, translation, rotation, direct_motors, servo_pwm):
         self.translate_x = translate_x
         self.translation = translation
         self.rotation = rotation

@@ -4,7 +4,7 @@ import json
 import os
 
 import websockets
-
+from websockets.client import ClientConnection
 
 def main():
     print('onboard client starting')
@@ -34,7 +34,7 @@ def setup_using_command_line_args():
 
 
 # connect to surface station
-async def client_handler(websocket_uri: str, rov: ROV):
+async def client_handler(websocket_uri: str, rov: 'ROV'):
     async for websocket in websockets.connect(websocket_uri):
         try:
             await asyncio.gather(
@@ -48,7 +48,7 @@ async def client_handler(websocket_uri: str, rov: ROV):
 
 
 # incoming command handling (instructions for ROV)
-async def consumer_handler(websocket: ClientConnection, rov: ROV):
+async def consumer_handler(websocket: ClientConnection, rov: 'ROV'):
     async for message in websocket:
         data = json.loads(message)
         if data['type'] == 'set_pin_pwms':
@@ -60,7 +60,7 @@ async def consumer_handler(websocket: ClientConnection, rov: ROV):
 
 
 # outgoing data handling (sensor readings)
-async def producer_handler(websocket: ClientConnection, rov: ROV):
+async def producer_handler(websocket: ClientConnection, rov: 'ROV'):
     while True:
         await asyncio.gather(
             send_onboard_digest(websocket, rov),
@@ -70,8 +70,8 @@ async def producer_handler(websocket: ClientConnection, rov: ROV):
 
 # TODO: create hardware-agnostic sensor reading system
 # currently requires hardcoding sensor pins, protocols, etc.
-async def send_onboard_digest(websocket: ClientConnection, rov: ROV):
-    await gyro, accel = rov.poll_sensors()
+async def send_onboard_digest(websocket: ClientConnection, rov: 'ROV'):
+    gyro, accel = await rov.poll_sensors()
     await websocket.send(json.dumps({
         'type': 'sensor_summary',
         'accelerometer': accel,

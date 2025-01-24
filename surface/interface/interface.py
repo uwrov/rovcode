@@ -5,8 +5,9 @@ import asyncio
 import json
 
 class Interface():
-    def __init__(_core, _task):
-        self.core, self.task = _core, _task
+    def __init__(self, _core: 'Core'):
+        self.core = _core
+        self.task = None
         self.websocket = None
 
         uri = 'ws://localhost:8002'
@@ -14,18 +15,22 @@ class Interface():
         subprocess.Popen(['godot', '--quiet', 'interface.tscn', '-u', uri], cwd=cwd,
                          stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-    def notify_new_sensor_data():
+    def set_task(self, task: 'Task'):
+        self.task = task
+
+
+    def notify_new_sensor_data(self):
         print(f'accelerometer: {self.core.accelerometer}, gyro: {self.core.gyroscope}')
 
-    async def server_handler(_websocket):
+    async def server_handler(self, _websocket):
         self.websocket = _websocket
         async for message in self.websocket:
             data = json.loads(str(message)[2:-1])
             result = json.dumps(data)
-            core.consume_interface_websocket(data['translate'], data['translation'], data['rotation'], data['direct_motors'], data['servo_pwm'])
+            await self.core.consume_interface_websocket(data['translate'], data['translation'], data['rotation'], data['direct_motors'], data['servo_pwm'])
 
 
-    async def notify_sensor_update():
+    async def notify_sensor_update(self):
         if self.websocket != None:
             await self.websocket.send(json.dumps({
                 'accelerometer': self.core.accelerometer,

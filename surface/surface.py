@@ -7,13 +7,20 @@ from interface.interface import Interface
 from task.task import Task
 
 import websockets
+from websockets.client import ClientConnection
 import functools
 
 def main():
     print('surface server starting')
-    core = Core(interface, task)
-    interface = Interface(core, task)
+    core = Core()
+
+    interface = Interface(core)
+    core.set_interface(interface)
+
     task = Task(core, interface)
+    core.set_task(task)
+    interface.set_task(task)
+
     print('serving')
     asyncio.run(serve(core, interface))
 
@@ -55,12 +62,12 @@ async def produce_outgoing_commands_to_rov(websocket: ClientConnection, core: Co
     while True:
         await asyncio.gather(
             update_controls_and_send_to_rov(websocket, core),
-            asyncio.sleep(0.1)  # limit to 100 summaries per second
+            asyncio.sleep(0.1)  # limit to 10 summaries per second
         )
 
 
 async def update_controls_and_send_to_rov(websocket: ClientConnection, core: Core):
-    await pin_pwms = core.update_controls()
+    pin_pwms = await core.update_controls()
     await websocket.send(json.dumps({
         'type': 'set_pin_pwms',
         'pins': pin_pwms
