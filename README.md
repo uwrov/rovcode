@@ -71,7 +71,7 @@ Notes:
 ## Running the System
 
 Connecting to the physical ROV:
-`ssh pi@192.168.0.99 -p 69`
+`ssh pi@192.168.123.100 -p 69`
 Password: `raspberry` (yes this is the default)
 
 Note on cameras:
@@ -80,7 +80,7 @@ pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -c exposure_auto=1,exposure_abso
 pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -v width=1024,height=768,pixelformat='MJPG' --stream-mmap --stream-to - | raspivid_mjpeg_server
 ```
 
-View: http://192.168.0.99:8554/
+View: http://192.168.123.100:8554/
 
 Better balance of low light performance (~20 fps):
 ```sh
