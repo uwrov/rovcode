@@ -1,98 +1,81 @@
 import random
 import numpy as np
-from .rov_config import thruster_config
+from .rov_config import thruster_config as THRUSTER_CFG
 from .accel_gyro_values import manipulate_gyro_accel
 
 from .motor_power_translator import convert_force_and_torque_to_motor_powers
 from .pwm_translator import convert_motor_powers_to_pwms
 
-accelerometer, gyroscope = None, None
-translate_x = 0.0
+SERVO_PIN = 9
 
-translation = [0.0, 0.0, 0.0]
-rotation = [0.0, 0.0, 0.0]
+TIME_TO_RAMP = 1.0
+TIME_PER_CYCLE = 0.1
+AMPLITUDE = 400
+RAMP_LIMIT = (TIME_PER_CYCLE / TIME_TO_RAMP) * AMPLITUDE
 
-direct_motors = False
+class Core():
+    def __init__(_interface, _task):
+        self.interface, self.task = _interface, _task
 
-servo_pin = 9
-servo_pwm = 1500
+        self.translate_x = 0.0
+        self.translation = [0.0, 0.0, 0.0]
+        self.rotation = [0.0, 0.0, 0.0]
 
-pin_pwms = None
+        self.direct_motors = False
+        self.servo_pwm = 1500
 
-# pin_ids = [20, 25, 24, 23, 12, 16]
-# pin_ids = [20, 25, 23, 24, 12, 16] # switch E and F to work around E's old ESC being broken
+        self.accelerometer, self.gyroscope = None, None
 
-prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
+        self.prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
 
-# pin_ids = []
-# motor_directions = []
-# for motor in thruster_config:   
-#     pin_ids.append(motor.get('pin'))
-#     if motor.get('run_reversed'):
-#         motor_directions.append(-1)
-#     else:
-#         motor_directions.append(1)
-# print(pin_ids)
-# print(motor_directions)
-# thruster_config[0]['pin'] 
+    async def update_sensors(summary_data):
+        self.accelerometer = summary_data['accelerometer']
+        self.gyroscope = summary_data['gyroscope']
+        await self.interface.notify_sensor_update()
 
-time_to_ramp = 1.0  # 1.0
-time_per_cycle = 0.1  # 0.01
-amplitude = 400
+    async def update_controls():
+        trans = self.translation
+        rot = self.rotation
+        powers = [trans[0], trans[1], trans[2], rot[0], rot[1], rot[2]]
 
-def init(_interface, _task):
-    global interface, task
-    interface, task = _interface, _task
+        if not direct_motors:
+            powers = convert_force_and_torque_to_motor_powers(powers)
 
+        if False: # PIDF code - doesn't work, just a rudimentary version
+            accel_gyro_values.manipulate_gyro_accel_values(self.accelerometer, self.gyroscope)
 
-async def update_sensors(summary_data):
-    global accelerometer, gyroscope
-    accelerometer = summary_data['accelerometer']
-    gyroscope = summary_data['gyroscope']
-    await interface.notify_sensor_update()
+        for i in range(len(powers)):
+            powers[i] *= THRUSTER_CFG[i]['direction']
 
+        powers *= 0.25
+        largest_power = np.max(np.abs(powers))
+        if largest_power > 0.5:
+            powers /= largest_power
+            powers *= 0.5
 
-async def update_controls():
-    global pin_pwms
+        pwms = convert_motor_powers_to_pwms(powers)
+        
+        delta_pwms = np.subtract(pwms, self.prev_pwms)
+        delta_pwms = np.clip(delta_pwms, -RAMP_LIMIT, +RAMP_LIMIT)
 
-    if direct_motors:
-        powers = [translation[0], translation[1], translation[2], rotation[0], rotation[1], rotation[2]]
-    else:
-        powers = convert_force_and_torque_to_motor_powers(
-            [translation[0], translation[1], translation[2], rotation[0], rotation[1], rotation[2]]
-        )
+        pwms = np.add(self.prev_pwms, delta_pwms).astype(int).tolist()
+        self.prev_pwms = pwms
 
-    if (False): # PIDF code - doesn't work, just a rudimentary version
-        accel_gyro_values.manipulate_gyro_accel_values(accelerometer, gyroscope)
+        pin_pwms = [{
+            'number': THRUSTER_CFG[i]['pin'],
+            'value': pwms[i]
+        } for i in range(len(pwms))]
 
-    for i in range(len(powers)):
-        powers[i] = powers[i] * thruster_config[i]['direction']
+        pin_pwms.append({
+            'number': SERVO_PIN,
+            'value': self.servo_pwm,
+        })
 
-    powers *= 0.25
+        return pin_pwms
 
-    largest_power = np.max(np.abs(powers))
-    if largest_power > 0.5:
-        powers /= largest_power
-        powers *= 0.5
-
-    pwms = convert_motor_powers_to_pwms(powers)
-    
-    global prev_pwms
-    ramp_limit = (time_per_cycle / time_to_ramp) * amplitude
-
-    delta_pwms = np.subtract(pwms, prev_pwms)
-    delta_pwms = np.clip(delta_pwms, -ramp_limit, +ramp_limit)
-
-    pwms = np.add(prev_pwms, delta_pwms).astype(int).tolist()
-    prev_pwms = pwms
-
-    pin_pwms = [{
-        'number': thruster_config[i]['pin'],
-        'value': pwms[i]
-    } for i in range(len(pwms))]
-
-    pin_pwms.append({
-        'number': servo_pin,
-        'value': servo_pwm,
-    })
-
+    async def consume_interface_websocket(translate_x, translation, rotation, direct_motors, servo_pwm):
+        self.translate_x = translate_x
+        self.translation = translation
+        self.rotation = rotation
+        self.direct_motors = direct_motors
+        self.servo_pwm = servo_pwm

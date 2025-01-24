@@ -1,5 +1,5 @@
-def init(_core, _interface):
-    global core, interface
-    core, interface = _core, _interface
+class Task():
+    def __init__(_core, _interface):
+        self.core, self.interface = _core, _interface
 
 
