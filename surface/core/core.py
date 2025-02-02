@@ -44,7 +44,7 @@ class Core():
         rot = self.rotation
         powers = [trans[0], trans[1], trans[2], rot[0], rot[1], rot[2]]
 
-        if not direct_motors:
+        if not self.direct_motors:
             powers = convert_force_and_torque_to_motor_powers(powers)
 
         if False: # PIDF code - doesn't work, just a rudimentary version

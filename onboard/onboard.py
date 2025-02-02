@@ -9,7 +9,7 @@ from websockets.client import ClientConnection
 def main():
     print('onboard client starting')
     rov, websocket_uri = setup_using_command_line_args()
-    asyncio.run(client_handler(websocket_uri))
+    asyncio.run(client_handler(websocket_uri, rov))
 
 
 # allows file to be run with arguments
