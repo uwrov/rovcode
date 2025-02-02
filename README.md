@@ -71,16 +71,24 @@ Notes:
 ## Running the System
 
 Connecting to the physical ROV:
-`ssh pi@192.168.123.100 -p 69`
+`ssh pi`
 Password: `raspberry` (yes this is the default)
 
 Note on cameras:
 ```sh
 pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -c exposure_auto=1,exposure_absolute=300,brightness=0,gain=100
-pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -v width=1024,height=768,pixelformat='MJPG' --stream-mmap --stream-to - | raspivid_mjpeg_server
+pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 4 -v width=1024,height=768,pixelformat='MJPG' --stream-mmap --stream-to - | raspivid_mjpeg_server -p 8554
+pi@main:~/raspivid_mjpeg_server $ v4l2-ctl -d 0 -v width=1024,height=768,pixelformat='MJPG' --stream-mmap --stream-to - | raspivid_mjpeg_server -p 8555
 ```
 
-View: http://192.168.123.100:8554/
+You can run all of this with:
+```sh
+./start_cameras.sh > /dev/null 2>&1 &
+```
+
+(Bookmarked on surface station Chrome)
+Front cam: http://172.25.250.1:8554/
+Down cam: http://172.25.250.1:8555/
 
 Better balance of low light performance (~20 fps):
 ```sh
