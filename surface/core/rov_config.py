@@ -12,9 +12,9 @@
 # it's possible that something is left-right mirrored...
 
 rov_center_of_mass = [
-    -0.001485,
-    -0.173302,
-    0.009533
+    -0.000351,
+    -0.187379,
+    0.009846
 ]
 
 # TODO: ROV mass moments of inertia
@@ -47,7 +47,7 @@ thruster_config = [
     },
     {
         'name': 'forward_top',
-        'location': [-0.00000, -0.02334, 0.14370],
+        'location': [-0.00000, -0.02672, 0.14450],
         'orientation': [0.0, -1.0, 0.0],
         'pin': 26,
         # 'pin': 24,
@@ -60,32 +60,32 @@ thruster_config = [
     },
     {
         'name': 'sideways_top',
-        'location': [0.00066, -0.33600, 0.14370],
+        'location': [0.00137, -0.2575, 0.14450],
         'orientation': [1.0, 0.0, 0.0],
         # 'pin': 20,  # 2024-04-15
         # 'pin': 19,
         # 'pin': 23,
         'pin': 6,
-        'model': 't-100',
+        'model': 't-200',
         # 'direction': 1,
         'direction': 1,
         'letter': 'F',
     },
     {
         'name': 'up_left',
-        'location': [0.15320, -0.14400, 0.04466],
+        'location': [0.15380, -0.14550, 0.04276],
         'orientation': [0.0, 0.0, 1.0],
         'pin': 12,
-        'model': 't-100',
+        'model': 't-200',
         'direction': -1,
         'letter': 'C',
     },
     {
         'name': 'up_right',
-        'location': [-0.15320, -0.14400, 0.04466],
+        'location': [-0.15380, -0.14550, 0.04276],
         'orientation': [0.0, 0.0, 1.0],
         'pin': 16,
-        'model': 't-100',
+        'model': 't-200',
         'direction': 1,
         'letter': 'B',
     },
