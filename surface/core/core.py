@@ -15,7 +15,7 @@ AMPLITUDE = 400
 RAMP_LIMIT = (TIME_PER_CYCLE / TIME_TO_RAMP) * AMPLITUDE
 
 
-class Core():
+class Core:
     def __init__(self):
         self.interface, self.task = None, None
 
@@ -27,7 +27,11 @@ class Core():
         self.bottom_manip_pwm = 1500
         self.top_manip_pwm = 1500
 
-        self.accelerometer, self.gyroscope, self.rotational_velocity = None, None, None
+        self.accelerometer, self.gyroscope, self.rotational_velocity = (
+            None,
+            None,
+            None,
+        )
 
         self.prev_pwms = [1500, 1500, 1500, 1500, 1500, 1500]
 
@@ -44,10 +48,10 @@ class Core():
         else:
             self.viz = None
 
-    def set_interface(self, interface: 'Interface'):
+    def set_interface(self, interface: "Interface"):
         self.interface = interface
 
-    def set_task(self, task: 'Task'):
+    def set_task(self, task: "Task"):
         self.task = task
 
     async def update_sensors(self, packet):
@@ -64,24 +68,32 @@ class Core():
 
         if not self.direct_motors:
             DEADBAND = 0.1
-            if np.linalg.norm(powers[3:]) > DEADBAND or self.rotational_velocity is None or self.rotational_velocity == -1:
+            if (
+                np.linalg.norm(powers[3:]) > DEADBAND
+                or self.rotational_velocity is None
+            ):
                 print("NO CORRECTION")
                 powers = convert_force_and_torque_to_motor_powers(powers)
             else:
-                ROT_CORRECTION_STRENGTH = [0.0, 0.0, 0.0]
-                # ROT_CORRECTION_STRENGTH = [0.5, 0.5, 0.5]
-                powers[3:] = -np.array(self.rotational_velocity) * ROT_CORRECTION_STRENGTH
+                # ROT_CORRECTION_STRENGTH = [0.0, 0.0, 0.0]
+                ROT_CORRECTION_STRENGTH = [0.5, 0.5, 0.5]
+                powers[3:] = (
+                    -np.array(self.rotational_velocity)
+                    * ROT_CORRECTION_STRENGTH
+                )
                 if self.viz is not None:
                     self.viz.update_plot(0, self.rotational_velocity[0])
                 powers = convert_force_and_torque_to_motor_powers(powers)
         else:
             powers = np.transpose(np.array([powers], dtype=np.float32))
 
-        if False: # PIDF code - doesn't work, just a rudimentary version
-            accel_gyro_values.manipulate_gyro_accel_values(self.accelerometer, self.gyroscope)
+        if False:  # PIDF code - doesn't work, just a rudimentary version
+            accel_gyro_values.manipulate_gyro_accel_values(
+                self.accelerometer, self.gyroscope
+            )
 
         for i in range(len(powers)):
-            powers[i] *= THRUSTER_CFG[i]['direction']
+            powers[i] *= THRUSTER_CFG[i]["direction"]
 
         # print(powers)
         powers *= 0.25
@@ -91,27 +103,31 @@ class Core():
             powers *= 0.5
 
         pwms = convert_motor_powers_to_pwms(powers)
-        
+
         delta_pwms = np.subtract(pwms, self.prev_pwms)
         delta_pwms = np.clip(delta_pwms, -RAMP_LIMIT, +RAMP_LIMIT)
 
         pwms = np.add(self.prev_pwms, delta_pwms).astype(int).tolist()
         self.prev_pwms = pwms
 
-        pin_pwms = [{
-            'number': THRUSTER_CFG[i]['pin'],
-            'value': pwms[i]
-        } for i in range(len(pwms))]
+        pin_pwms = [
+            {"number": THRUSTER_CFG[i]["pin"], "value": pwms[i]}
+            for i in range(len(pwms))
+        ]
 
-        pin_pwms.append({
-            'number': BOTTOM_MANIP_PIN,
-            'value': self.bottom_manip_pwm,
-        })
-        
-        pin_pwms.append({
-            'number': TOP_MANIP_PIN,
-            'value': self.top_manip_pwm,
-        })
+        pin_pwms.append(
+            {
+                "number": BOTTOM_MANIP_PIN,
+                "value": self.bottom_manip_pwm,
+            }
+        )
+
+        pin_pwms.append(
+            {
+                "number": TOP_MANIP_PIN,
+                "value": self.top_manip_pwm,
+            }
+        )
 
         return pin_pwms
 
