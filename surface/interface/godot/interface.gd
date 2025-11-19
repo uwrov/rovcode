@@ -22,7 +22,7 @@ var mode_names = {
 	2: "Single Toggle Manipulator Mode Top",
 	3: "Single Toggle Manipulator Mode Bottom",
 	4: "Thermistor Manipulator Mode",
-	5: "Syringe Manipulator Mode"
+	5: "Syringe Manipulator Mode",
 	6: "Walk The Planck"
 }
 
