@@ -23,6 +23,7 @@ var mode_names = {
 	3: "Single Toggle Manipulator Mode Bottom",
 	4: "Thermistor Manipulator Mode",
 	5: "Syringe Manipulator Mode"
+	6: "Walk The Planck"
 }
 
 var light_on = false
@@ -355,6 +356,13 @@ func _process(delta):
 			top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_open"):
 			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+	elif manipulator_index == 6:
+		if Input.is_action_pressed("manipulator_close"):
+			spinPWM = 1500
+		if Input.is_action_pressed("manipulator_open"):
+			spinPWM = 1600
+		if Input.is_action_pressed("manipulator_left"):
+			spinPWM = 1400
 			
 	
 	if Input.is_action_pressed("light_on"):
