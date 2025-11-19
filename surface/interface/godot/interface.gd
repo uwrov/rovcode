@@ -363,8 +363,12 @@ func _process(delta):
 		if Input.is_action_pressed("manipulator_open"):
 			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_left"):
+			#added the 2nd motor inverse motion
+			bottom_manipulator_pwm += 100 * PWM_COEFFICIENT
 			top_manipulator_pwm -= 100 * PWM_COEFFICIENT
 		if Input.is_action_pressed("manipulator_right"):
+			#added the 2nd motor inverse motion
+			bottom_manipulator_pwm -= 100 * PWM_COEFFICIENT
 			top_manipulator_pwm += 100 * PWM_COEFFICIENT
 			
 	
