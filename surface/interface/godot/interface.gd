@@ -1,6 +1,6 @@
 extends Control
 
-export var websocket_url = "ws://localhost:8002"
+export var websocket_url = "ws://localhost:8002"	
 
 var _client = WebSocketClient.new()
 
@@ -15,14 +15,15 @@ var power_adjust_hold_time := 0.0
 var power_repeat_delay := 0.2  # Seconds between repeated steps
 var manipulator_repeat_delay := 0.5
 var manipulator_index = 1
-var totalManipulators = 5
+var totalManipulators = 6
 
 var mode_names = {
 	1: "Dual Axis Manipulator Mode",
 	2: "Single Toggle Manipulator Mode Top",
 	3: "Single Toggle Manipulator Mode Bottom",
 	4: "Thermistor Manipulator Mode",
-	5: "Syringe Manipulator Mode"
+	5: "Syringe Manipulator Mode",
+	6: "Bucket Manipulator Mode"
 }
 
 var light_on = false
