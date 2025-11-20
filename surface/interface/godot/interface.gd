@@ -358,13 +358,13 @@ func _process(delta):
 			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
 	elif manipulator_index == 6:
 		if Input.is_action_pressed("manipulator_close"):
-			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_open"):
-			top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
+			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_left"):
-			top_manipulator_pwm -= 100 * PWM_COEFFICIENT
+			bottom_manipulator_pwm -= 100 * PWM_COEFFICIENT
 		if Input.is_action_pressed("manipulator_right"):
-			top_manipulator_pwm += 100 * PWM_COEFFICIENT
+			bottom_manipulator_pwm += 100 * PWM_COEFFICIENT
 			
 	
 	if Input.is_action_pressed("light_on"):
