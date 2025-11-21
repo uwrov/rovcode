@@ -260,6 +260,10 @@ def determine_letter(frame, x_min, x_max, y_min, y_max):
     print(f"Average sum: {threshold}")
     print(f"Section sums: {section_sums}, Middle index: {middle_index}")
 
+    # Prevent out of bounds hit
+    if (middle_index > 5) or (middle_index < 4):
+        return letter
+
     if (
         (section_sums[middle_index - 2] > threshold)
         and (section_sums[middle_index + 2] > threshold)
