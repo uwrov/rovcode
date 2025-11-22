@@ -315,7 +315,7 @@ func _process(delta):
 	var top_manipulator_pwm = 1500
 
 	var OPEN_PWM = 75
-	var PWM_COEFFICIENT = 1
+	var PWM_COEFFICIENT = 1.5
 	if manipulator_index == 1:
 		if Input.is_action_pressed("manipulator_close"):
 			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
@@ -352,9 +352,9 @@ func _process(delta):
 		if Input.is_action_pressed("manipulator_right"):
 			top_manipulator_pwm += 100 * PWM_COEFFICIENT
 	elif manipulator_index == 5:
-		if Input.is_action_pressed("manipulator_close"):
+		if Input.is_action_pressed("manipulator_close"): # a
 			top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
-		if Input.is_action_pressed("manipulator_open"):
+		if Input.is_action_pressed("manipulator_open"): #b
 			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
 	# changed by pavitr
 	elif manipulator_index == 6:
@@ -363,8 +363,12 @@ func _process(delta):
 		if Input.is_action_pressed("manipulator_open"):
 			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_left"):
+			#added the 2nd motor inverse motion
+			bottom_manipulator_pwm += 200 * PWM_COEFFICIENT
 			top_manipulator_pwm -= 100 * PWM_COEFFICIENT
 		if Input.is_action_pressed("manipulator_right"):
+			#added the 2nd motor inverse motion
+			bottom_manipulator_pwm -= 200 * PWM_COEFFICIENT
 			top_manipulator_pwm += 100 * PWM_COEFFICIENT
 			
 	
