@@ -342,7 +342,7 @@ func _process(delta):
 			top_manipulator_pwm = spinPWM
 		else:
 			bottom_manipulator_pwm = spinPWM
-	elif manipulator_index == 4:
+	elif manipulator_index == 4 or manipulator_index == 6:
 		if Input.is_action_pressed("manipulator_close"):
 			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_open"):
