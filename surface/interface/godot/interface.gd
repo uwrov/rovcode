@@ -315,7 +315,7 @@ func _process(delta):
 	var top_manipulator_pwm = 1500
 
 	var OPEN_PWM = 75
-	var PWM_COEFFICIENT = 1.5
+	var PWM_COEFFICIENT = 1
 	if manipulator_index == 1:
 		if Input.is_action_pressed("manipulator_close"):
 			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
