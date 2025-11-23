@@ -72,7 +72,7 @@ thruster_config = [
         'orientation': [0.0, -1.0, 0.0],
         'pin': 16,
         'model': 't-200',
-        'direction': -1,
+        'direction': 1,
         'handing' : -1,
         'letter': 'E',
     },
