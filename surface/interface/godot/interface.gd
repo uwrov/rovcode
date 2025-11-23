@@ -19,8 +19,8 @@ var totalManipulators = 5
 
 var mode_names = {
 	1: "Dual Axis Manipulator Mode",
-	2: "Single Toggle Manipulator Mode Top",
-	3: "Single Toggle Manipulator Mode Bottom",
+	2: "Magnet",
+	3: "Clamp",
 	4: "Thermistor Manipulator Mode",
 	5: "Syringe Manipulator Mode"
 }
@@ -333,9 +333,9 @@ func _process(delta):
 		if Input.is_action_pressed("manipulator_close"):
 			spinPWM = 1500
 		if Input.is_action_pressed("manipulator_open"):
-			spinPWM = 1600
+			spinPWM = 1550
 		if Input.is_action_pressed("manipulator_left"):
-			spinPWM = 1400
+			spinPWM = 1450
 
 		if manipulator_index == 2:
 			top_manipulator_pwm = spinPWM
