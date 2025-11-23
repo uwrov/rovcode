@@ -22,7 +22,8 @@ var mode_names = {
 	2: "Single Toggle Manipulator Mode Top",
 	3: "Single Toggle Manipulator Mode Bottom",
 	4: "Thermistor Manipulator Mode",
-	5: "Syringe Manipulator Mode"
+	5: "Syringe Manipulator Mode",
+	6: "Cogwheel Manipulator Mode"
 }
 
 var light_on = false
@@ -355,6 +356,12 @@ func _process(delta):
 			top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
 		if Input.is_action_pressed("manipulator_open"):
 			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+	elif manipulator_index == 6: # Cogwheel.
+		if Input.is_action_pressed("manipulator_left"):
+			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+		if Input.is_action_pressed("manipulator_right"):
+			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
+		
 			
 	
 	if Input.is_action_pressed("light_on"):
