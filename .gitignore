@@ -7,3 +7,4 @@ __pycache__/
 .Python
 *.so
 *.mp4
+surface/analysis/pvc/yolov8n-seg.pt
