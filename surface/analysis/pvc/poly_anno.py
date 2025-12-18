@@ -16,11 +16,13 @@ train_img_dir = os.path.join(OUTPUT_DIR, "images", "train")
 val_img_dir = os.path.join(OUTPUT_DIR, "images", "val")
 train_label_dir = os.path.join(OUTPUT_DIR, "labels", "train")
 val_label_dir = os.path.join(OUTPUT_DIR, "labels", "val")
+drawn_img_dir = os.path.join(OUTPUT_DIR, "ref")
 
 os.makedirs(train_img_dir, exist_ok=True)
 os.makedirs(val_img_dir, exist_ok=True)
 os.makedirs(train_label_dir, exist_ok=True)
 os.makedirs(val_label_dir, exist_ok=True)
+os.makedirs(drawn_img_dir, exist_ok=True)
 
 points = []
 
@@ -84,6 +86,8 @@ def annotate_image(image_path, id):
             vert = np.array(points, np.int32)
             pts = vert.reshape(-1, 1, 2)
             img = cv2.polylines(img, [pts], isClosed=True, color=(0, 255, 0), thickness=2)
+            drawn_path = os.path.join(drawn_img_dir, f"{id}_drawn.jpg")
+            cv2.imwrite(drawn_path, img)
             break
 
         # 'n' key for nextd
