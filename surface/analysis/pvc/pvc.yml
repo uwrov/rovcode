@@ -1,0 +1,5 @@
+path: ./pvc_dataset/images/train
+
+val: ./pvc_dataset/images/val
+
+names: ['pvc']
