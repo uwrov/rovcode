@@ -25,6 +25,38 @@ var mode_names = {
 	5: "Syringe Manipulator Mode"
 }
 
+var x_button = {
+	1: "open top manipulator",
+	2: "test",
+	3: "nothing",
+	4: "ahhh",
+	5: "help"
+}
+
+var y_button = {
+	1: "open no clue manipulator",
+	2: "testing",
+	3: "nothing",
+	4: "plz tell me its changing",
+	5: "if not rough"
+}
+
+var b_button = {
+	1: "i shoudl lowkey figure this out soon",
+	2: "test",
+	3: "nothing",
+	4: "ahhh",
+	5: "help"
+}
+
+var a_button = {
+	1: "oaoi sdfhio",
+	2: "test",
+	3: "nothing",
+	4: "ahhh",
+	5: "help"
+}
+
 var light_on = false
 
 func _ready():
@@ -203,6 +235,18 @@ func _process(delta):
 		$LabelDebug.text = "Manipulator Mode: %s (Index: %d)" % [
 			mode_names.get(manipulator_index, "Unknown"), 
 			manipulator_index
+		]
+		$LabelXButton.text = "x - %s manipulator" % [
+			x_button.get(manipulator_index, "Unknown"),
+		]
+		$LabelYButton.text = "y - %s manipulator" % [
+			y_button.get(manipulator_index, "Unknown"),
+		]
+		$LabelBButton.text = "b - %s manipulator" % [
+			b_button.get(manipulator_index, "Unknown"),
+		]
+		$LabelAButton.text = "a - %s manipulator" % [
+			a_button.get(manipulator_index, "Unknown"),
 		]
 	else:
 		power_adjust_hold_time = 0  # Reset when not held
