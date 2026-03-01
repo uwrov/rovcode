@@ -99,30 +99,29 @@ texture = ExtResource( 3 )
 [node name="MoreInfo" type="CanvasLayer" parent="."]
 
 [node name="InfoPopUp" type="PanelContainer" parent="MoreInfo"]
-visible = false
 anchor_left = 0.115
 anchor_top = 0.121
 anchor_right = 0.115
 anchor_bottom = 0.121
-margin_left = 739.24
-margin_top = 471.4
-margin_right = 851.24
-margin_bottom = 506.4
+margin_left = 229.24
+margin_top = -10.6
+margin_right = 629.24
+margin_bottom = 378.4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MoreInfo/InfoPopUp"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 105.0
-margin_bottom = 45.0
+margin_right = 393.0
+margin_bottom = 382.0
 
 [node name="SeeMore" type="Label" parent="MoreInfo/InfoPopUp/VBoxContainer"]
-margin_right = 98.0
+margin_right = 386.0
 margin_bottom = 14.0
 text = "See more:"
 
 [node name="Button" type="Button" parent="MoreInfo/InfoPopUp/VBoxContainer"]
 margin_top = 18.0
-margin_right = 98.0
+margin_right = 386.0
 margin_bottom = 38.0
 
 [node name="LabelBButton" type="Label" parent="."]

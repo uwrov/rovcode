@@ -2,6 +2,9 @@ extends Control
 
 export var websocket_url = "ws://localhost:8002"
 
+onready var popup = $MoreInfo/InfoPopUp
+onready var popup_label = $MoreInfo/InfoPopUp/VBoxContainer/SeeMore
+
 var _client = WebSocketClient.new()
 
 var ready = false
@@ -26,35 +29,35 @@ var mode_names = {
 }
 
 var x_button = {
-	1: "open top manipulator",
-	2: "test",
-	3: "nothing",
-	4: "ahhh",
-	5: "help"
+	1: "close bottom manipulator",
+	2: "spin medium",
+	3: "spin medium",
+	4: "bottom close",
+	5: "top open"
 }
 
 var y_button = {
-	1: "open no clue manipulator",
-	2: "testing",
-	3: "nothing",
-	4: "plz tell me its changing",
-	5: "if not rough"
+	1: "open bottom manipulator",
+	2: "spin fast",
+	3: "spin fast",
+	4: "bottom open",
+	5: "top close"
 }
 
 var b_button = {
-	1: "i shoudl lowkey figure this out soon",
-	2: "test",
-	3: "nothing",
-	4: "ahhh",
-	5: "help"
+	1: "dont know - impact both top/bottom",
+	2: "spin slow",
+	3: "spin slow",
+	4: "top close",
+	5: "N/A"
 }
 
 var a_button = {
-	1: "oaoi sdfhio",
-	2: "test",
-	3: "nothing",
-	4: "ahhh",
-	5: "help"
+	1: "opposite of B (?)",
+	2: "top manipulator power change",
+	3: "bottom manipulator power change",
+	4: "top open",
+	5: "N/A"
 }
 
 var light_on = false
@@ -69,6 +72,8 @@ func _ready():
 	if err != OK:
 		print("Unable to connect")
 		set_process(false)
+		
+	popup.hide()
 
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
@@ -453,3 +458,10 @@ func _process(delta):
 			"power_scale" : power_scale,
 			"light_on": light_on}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())
+
+	if Input.is_action_pressed("get_help"):
+		if popup.visible:
+				popup.hide()
+		else:
+			# Update the text right before showing it
+			popup.show()
