@@ -4,7 +4,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import cv2 # use for image loading
 import numpy as np
-from nucleus import Point, PolygonAnnotation
 
 SOURCE_DIR = "./frames/"
 OUTPUT_DIR = "./pvc_dataset/"
