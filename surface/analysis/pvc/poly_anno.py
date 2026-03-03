@@ -155,9 +155,12 @@ def save_label(filename, frame, label, flag):
     else:
         image_path = os.path.join(val_img_dir, f"{filename}.jpg")
         label_path = os.path.join(val_label_dir, f"{filename}.txt")
-    
+
     cv2.imwrite(image_path, frame)
-    
+
+    print(f"Label: {label_path}")
+    print(f"Train: {image_path}")
+
     with open(label_path, "w") as f:
         for polygon in label:
             f.write(polygon_to_yolo(polygon))
@@ -165,6 +168,7 @@ def save_label(filename, frame, label, flag):
     print(f"saved image and labels to: {flag}")
 
 def main():
+    
     id = 0
 
     # TODO: instead of camera capture, use pre-recorded video for training
