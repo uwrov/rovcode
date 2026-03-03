@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # Load model
-model = YOLO("runs/segment/train/weights/best.pt")
+model = YOLO("best.pt")
 
 # Run inference on video (stream=True is IMPORTANT)
 results = model("videos/1.mp4", stream=True)
