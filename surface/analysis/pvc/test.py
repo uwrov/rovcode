@@ -3,31 +3,58 @@ import cv2
 import numpy as np
 
 # Load model
-model = YOLO("best.pt")
+model = YOLO("runs/segment/train4/weights/best.pt")
 
-# Run inference on video (stream=True is IMPORTANT)
-results = model("videos/1.mp4", stream=True)
+# Class names
+names = model.names
 
-# Loop through video frames
+# Run inference
+results = model("videos/live2.mp4", stream=True)
+
 for result in results:
-    frame = result.orig_img.copy()  # BGR image
+    frame = result.orig_img.copy()
 
     if result.masks is not None:
-        masks = result.masks.data.cpu().numpy()  # (N, H, W)
+        masks = result.masks.data.cpu().numpy()
+        boxes = result.boxes
 
-        for mask in masks:
-            color = np.random.randint(0, 255, (3,), dtype=np.uint8)
+        for i, mask in enumerate(masks):
 
-            # Resize mask if needed (safety)
+            cls_id = int(boxes.cls[i])
+            conf = float(boxes.conf[i])
+            label = f"{names[cls_id]} {conf:.2f}"
+
+            # stable color based on class id
+            color = tuple(
+                int(x)
+                for x in np.random.default_rng(cls_id).integers(0, 255, 3)
+            )
+
             mask = cv2.resize(mask, (frame.shape[1], frame.shape[0]))
 
-            # Apply mask
-            frame[mask > 0.5] = 0.5 * frame[mask > 0.5] + 0.5 * color
+            # overlay mask
+            frame[mask > 0.5] = frame[mask > 0.5] * 0.5 + np.array(color) * 0.5
 
-    # Show frame
+            # get bounding box for label placement
+            x1, y1, x2, y2 = map(int, boxes.xyxy[i])
+
+            # draw bounding box
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+
+            # draw label
+            cv2.putText(
+                frame,
+                label,
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                color,
+                2,
+                cv2.LINE_AA,
+            )
+
     cv2.imshow("YOLOv8 Segmentation", frame)
 
-    # Quit on 'q'
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
