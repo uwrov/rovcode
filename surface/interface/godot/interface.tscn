@@ -116,13 +116,60 @@ margin_bottom = 382.0
 
 [node name="SeeMore" type="Label" parent="MoreInfo/InfoPopUp/VBoxContainer"]
 margin_right = 386.0
-margin_bottom = 14.0
-text = "See more:"
+margin_bottom = 48.0
+text = "See more:
+
+"
 
 [node name="Button" type="Button" parent="MoreInfo/InfoPopUp/VBoxContainer"]
-margin_top = 18.0
+margin_top = 52.0
 margin_right = 386.0
-margin_bottom = 38.0
+margin_bottom = 72.0
+
+[node name="ChangeManipulator" type="CanvasLayer" parent="."]
+
+[node name="popup" type="PanelContainer" parent="ChangeManipulator"]
+anchor_left = 0.115
+anchor_top = 0.121
+anchor_right = 0.115
+anchor_bottom = 0.121
+margin_left = 229.24
+margin_top = -5.6
+margin_right = 629.24
+margin_bottom = 383.4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ChangeManipulator/popup"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 393.0
+margin_bottom = 382.0
+
+[node name="mCurr" type="Label" parent="ChangeManipulator/popup/VBoxContainer"]
+margin_right = 386.0
+margin_bottom = 48.0
+text = "Current Manipulator:
+
+"
+
+[node name="mOptions" type="Label" parent="ChangeManipulator/popup/VBoxContainer"]
+margin_top = 52.0
+margin_right = 386.0
+margin_bottom = 100.0
+text = "Selected
+
+"
+
+[node name="Next" type="Button" parent="ChangeManipulator/popup/VBoxContainer"]
+margin_top = 104.0
+margin_right = 386.0
+margin_bottom = 124.0
+text = "Next"
+
+[node name="Previous" type="Button" parent="ChangeManipulator/popup/VBoxContainer"]
+margin_top = 128.0
+margin_right = 386.0
+margin_bottom = 148.0
+text = "Previous"
 
 [node name="LabelBButton" type="Label" parent="."]
 margin_left = 681.0

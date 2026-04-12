@@ -2,8 +2,18 @@ extends Control
 
 export var websocket_url = "ws://localhost:8002"
 
+# help option popup (not implemented)
 onready var popup = $MoreInfo/InfoPopUp
 onready var popup_label = $MoreInfo/InfoPopUp/VBoxContainer/SeeMore
+
+# popup to change manipulator
+onready var change_popup = $ChangeManipulator/popup 
+onready var option_label = $ChangeManipulator/popup/VBoxContainer/mOptions
+
+var option_index = 0
+var options_list = ["Manipulator 1", "Manipulator 2", "Manipulator 3"] #increase for total available options
+var total_options = options_list.size()
+var awaiting_confirmation = false #must be true to actually change the manipulator
 
 var _client = WebSocketClient.new()
 
@@ -74,6 +84,7 @@ func _ready():
 		set_process(false)
 		
 	popup.hide()
+	change_popup.hide()
 
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
@@ -364,47 +375,96 @@ func _process(delta):
 
 	var OPEN_PWM = 75
 	var PWM_COEFFICIENT = 1
-	if manipulator_index == 1:
-		if Input.is_action_pressed("manipulator_close"):
-			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
-		if Input.is_action_pressed("manipulator_open"):
-			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
-		
-		if Input.is_action_pressed("manipulator_left"):
-			bottom_manipulator_pwm -= 100 * PWM_COEFFICIENT #90 is ok
-			top_manipulator_pwm -= 115 * PWM_COEFFICIENT
-		if Input.is_action_pressed("manipulator_right"):
-			bottom_manipulator_pwm += 115 * PWM_COEFFICIENT #95 is ok
-			top_manipulator_pwm += 100 * PWM_COEFFICIENT
-		#bottom_manipulator_pwm += (bottom_manipulator_pwm - 1500) * 0.5
-		#top_manipulator_pwm += (top_manipulator_pwm - 1500) * 0.5
-	elif manipulator_index == 2 or manipulator_index == 3:
-		if Input.is_action_pressed("manipulator_close"):
-			spinPWM = 1500
-		if Input.is_action_pressed("manipulator_open"):
-			spinPWM = 1600
-		if Input.is_action_pressed("manipulator_left"):
-			spinPWM = 1400
-
-		if manipulator_index == 2:
-			top_manipulator_pwm = spinPWM
+	
+	if Input.is_action_pressed("get_help"):
+		if popup.visible:
+				popup.hide()
 		else:
-			bottom_manipulator_pwm = spinPWM
-	elif manipulator_index == 4:
-		if Input.is_action_pressed("manipulator_close"):
-			bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
-		if Input.is_action_pressed("manipulator_open"):
-			bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
-		if Input.is_action_pressed("manipulator_left"):
-			top_manipulator_pwm -= 100 * PWM_COEFFICIENT
-		if Input.is_action_pressed("manipulator_right"):
-			top_manipulator_pwm += 100 * PWM_COEFFICIENT
-	elif manipulator_index == 5:
-		if Input.is_action_pressed("manipulator_close"):
-			top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
-		if Input.is_action_pressed("manipulator_open"):
-			top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+			popup.show()
 			
+	if Input.is_action_pressed("change_manip"):
+		if change_popup.visible:
+			awaiting_confirmation = false
+			change_popup.hide()
+		else:
+			change_popup.show()
+	
+	if change_popup.visible:
+		# abort manipulator change
+		if Input.is_action_pressed("manipulator_right") and Input.is_action_pressed("manipulator_close"): #x & b
+			if awaiting_confirmation:
+				awaiting_confirmation = false
+				option_label.text = "Selection Cancelled. Pick again."
+				print("Confirmation Aborted")
+		
+		if not awaiting_confirmation:
+			if Input.is_action_just_pressed("manipulator_right"): # X
+				option_index = (option_index + 1) % options_list.size()
+				option_label.text = "Selected: " + options_list[option_index]   
+				
+			if Input.is_action_just_pressed("manipulator_close"): # B
+				option_index -= 1
+				if option_index < 0:
+					option_index = options_list.size() - 1
+				option_label.text = "Selected: " + options_list[option_index]
+				
+			if Input.is_action_just_pressed("manipulator_left"): #y
+				awaiting_confirmation = true
+				option_label.text = "CONFIRMING: " + options_list[option_index] + "\n(Press 'Change' to Apply)"
+		
+		# actually change the manipulator
+		if awaiting_confirmation and Input.is_action_just_pressed("change_manip"):
+			# manipulator_index = option_index + 1 
+			# would change manipulator mode to match selected option? (not sure if thats a desired feature tho)
+			print("Manipulator Hardware Swapped to: ", manipulator_index)
+			
+			# actually code the switch here :| (potentially w/ delay)
+			
+			change_popup.hide()
+			awaiting_confirmation = false
+			
+	else: #so manipulators wont move but robot can? (will need to test later)
+		if manipulator_index == 1:
+			if Input.is_action_pressed("manipulator_close"):
+				bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+			if Input.is_action_pressed("manipulator_open"):
+				bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
+			
+			if Input.is_action_pressed("manipulator_left"):
+				bottom_manipulator_pwm -= 100 * PWM_COEFFICIENT #90 is ok
+				top_manipulator_pwm -= 115 * PWM_COEFFICIENT
+			if Input.is_action_pressed("manipulator_right"):
+				bottom_manipulator_pwm += 115 * PWM_COEFFICIENT #95 is ok
+				top_manipulator_pwm += 100 * PWM_COEFFICIENT
+			#bottom_manipulator_pwm += (bottom_manipulator_pwm - 1500) * 0.5
+			#top_manipulator_pwm += (top_manipulator_pwm - 1500) * 0.5
+		elif manipulator_index == 2 or manipulator_index == 3:
+			if Input.is_action_pressed("manipulator_close"):
+				spinPWM = 1500
+			if Input.is_action_pressed("manipulator_open"):
+				spinPWM = 1600
+			if Input.is_action_pressed("manipulator_left"):
+				spinPWM = 1400
+
+			if manipulator_index == 2:
+				top_manipulator_pwm = spinPWM
+			else:
+				bottom_manipulator_pwm = spinPWM
+		elif manipulator_index == 4:
+			if Input.is_action_pressed("manipulator_close"):
+				bottom_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+			if Input.is_action_pressed("manipulator_open"):
+				bottom_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
+			if Input.is_action_pressed("manipulator_left"):
+				top_manipulator_pwm -= 100 * PWM_COEFFICIENT
+			if Input.is_action_pressed("manipulator_right"):
+				top_manipulator_pwm += 100 * PWM_COEFFICIENT
+		elif manipulator_index == 5:
+			if Input.is_action_pressed("manipulator_close"):
+				top_manipulator_pwm += OPEN_PWM * PWM_COEFFICIENT * 1.7
+			if Input.is_action_pressed("manipulator_open"):
+				top_manipulator_pwm -= OPEN_PWM * PWM_COEFFICIENT * 1.7
+				
 	
 	if Input.is_action_pressed("light_on"):
 		light_on = true
@@ -459,9 +519,3 @@ func _process(delta):
 			"light_on": light_on}
 		_client.get_peer(1).put_packet(JSON.print(data).to_ascii())
 
-	if Input.is_action_pressed("get_help"):
-		if popup.visible:
-				popup.hide()
-		else:
-			# Update the text right before showing it
-			popup.show()
