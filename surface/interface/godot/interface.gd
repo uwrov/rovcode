@@ -418,7 +418,8 @@ func _process(delta):
 			# would change manipulator mode to match selected option? (not sure if thats a desired feature tho)
 			print("Manipulator Hardware Swapped to: ", manipulator_index)
 			
-			# actually code the switch here :| (potentially w/ delay)
+			# actually code the switch here :| (potentially w/ delay), 
+			# the manipulator change thing should only disappear when the switch has been complete
 			
 			change_popup.hide()
 			awaiting_confirmation = false
