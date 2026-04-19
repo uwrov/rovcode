@@ -376,13 +376,13 @@ func _process(delta):
 	var OPEN_PWM = 75
 	var PWM_COEFFICIENT = 1
 	
-	if Input.is_action_pressed("get_help"):
+	if Input.is_action_just_pressed("get_help"):
 		if popup.visible:
 				popup.hide()
 		else:
 			popup.show()
 			
-	if Input.is_action_pressed("change_manip"):
+	if Input.is_action_just_pressed("change_manip"):
 		if change_popup.visible:
 			awaiting_confirmation = false
 			change_popup.hide()
@@ -391,7 +391,7 @@ func _process(delta):
 	
 	if change_popup.visible:
 		# abort manipulator change
-		if Input.is_action_pressed("manipulator_right") and Input.is_action_pressed("manipulator_close"): #x & b
+		if Input.is_action_just_pressed("manipulator_right") and Input.is_action_pressed("manipulator_close"): #x & b
 			if awaiting_confirmation:
 				awaiting_confirmation = false
 				option_label.text = "Selection Cancelled. Pick again."
@@ -403,9 +403,7 @@ func _process(delta):
 				option_label.text = "Selected: " + options_list[option_index]   
 				
 			if Input.is_action_just_pressed("manipulator_close"): # B
-				option_index -= 1
-				if option_index < 0:
-					option_index = options_list.size() - 1
+				option_index = (option_index - 1 + options_list.size()) % options_list.size()
 				option_label.text = "Selected: " + options_list[option_index]
 				
 			if Input.is_action_just_pressed("manipulator_left"): #y
