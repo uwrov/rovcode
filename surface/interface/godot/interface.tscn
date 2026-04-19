@@ -159,17 +159,33 @@ text = "Selected:
 
 "
 
-[node name="Next" type="Button" parent="ChangeManipulator/popup/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ChangeManipulator/popup/VBoxContainer"]
 margin_top = 104.0
 margin_right = 386.0
 margin_bottom = 124.0
-text = "Next"
 
-[node name="Previous" type="Button" parent="ChangeManipulator/popup/VBoxContainer"]
+[node name="Next" type="Button" parent="ChangeManipulator/popup/VBoxContainer/HBoxContainer"]
+margin_right = 63.0
+margin_bottom = 20.0
+text = "Next (B)"
+
+[node name="Previous" type="Button" parent="ChangeManipulator/popup/VBoxContainer/HBoxContainer"]
+margin_left = 67.0
+margin_right = 155.0
+margin_bottom = 20.0
+text = "Previous (A)"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ChangeManipulator/popup/VBoxContainer/HBoxContainer/Previous"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="ChangeManipulator/popup/VBoxContainer"]
 margin_top = 128.0
 margin_right = 386.0
-margin_bottom = 148.0
-text = "Previous"
+margin_bottom = 176.0
+text = "Press X & A to confirm choice.
+
+Press Change(?) to leave"
 
 [node name="LabelBButton" type="Label" parent="."]
 margin_left = 681.0
