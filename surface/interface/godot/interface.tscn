@@ -100,6 +100,21 @@ margin_right = 197.0
 margin_bottom = 38.0
 text = "Direct motors instead of axes"
 
+[node name="EgcDetectorButton" type="Button" parent="."]
+margin_left = 280.0
+margin_top = 8.0
+margin_right = 460.0
+margin_bottom = 40.0
+text = "EGC camera detector"
+
+[node name="EgcDetectorStopButton" type="Button" parent="."]
+margin_left = 468.0
+margin_top = 8.0
+margin_right = 588.0
+margin_bottom = 40.0
+disabled = true
+text = "Stop EGC"
+
 [node name="ServoPWMSlider" type="HSlider" parent="."]
 anchor_right = 0.797
 anchor_bottom = 0.147
@@ -327,3 +342,6 @@ mesh = SubResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 material_override = SubResource( 1 )
 mesh = SubResource( 2 )
+
+[connection signal="pressed" from="EgcDetectorButton" to="." method="_on_EgcDetectorButton_pressed"]
+[connection signal="pressed" from="EgcDetectorStopButton" to="." method="_on_EgcDetectorStopButton_pressed"]
