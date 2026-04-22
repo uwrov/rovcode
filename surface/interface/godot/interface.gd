@@ -1,6 +1,8 @@
 extends Control
 
 export var websocket_url = "ws://localhost:8002"
+# Fallback if res://.yolo-env/.../python(.exe) is missing. Prefer a full path when not using the bundled venv.
+export(String) var python_executable = "python"
 
 var _client = WebSocketClient.new()
 
@@ -27,6 +29,12 @@ var mode_names = {
 
 var light_on = false
 
+# Godot 3.x has no OS.create_process; non-blocking OS.execute return is unreliable on Windows.
+# Run blocking OS.execute on a thread so the UI stays responsive while the detector runs.
+var _egc_detector_thread = null
+
+const EGC_STOP_FLAG_RES = "res://.egc_stop"
+
 func _ready():
 	_client.connect("connection_closed", self, "_closed")
 	_client.connect("connection_error", self, "_closed")
@@ -37,6 +45,142 @@ func _ready():
 	if err != OK:
 		print("Unable to connect")
 		set_process(false)
+
+
+func _exit_tree():
+	if _egc_detector_thread != null and _egc_detector_thread.is_active():
+		_egc_detector_thread.wait_to_finish()
+		_egc_detector_thread = null
+
+
+func _path_exists_abs(path: String) -> bool:
+	# Directory.file_exists is unreliable for some absolute paths on Windows; use File.open.
+	var f = File.new()
+	var p = path.replace("\\", "/")
+	var err = f.open(p, File.READ)
+	if err == OK:
+		f.close()
+		return true
+	# Retry with Windows backslashes
+	if OS.get_name() == "Windows":
+		p = path.replace("/", "\\")
+		err = f.open(p, File.READ)
+		if err == OK:
+			f.close()
+			return true
+	return false
+
+
+func _get_egc_python_executable() -> String:
+	var root = ProjectSettings.globalize_path("res://").replace("\\", "/")
+	if not root.ends_with("/"):
+		root += "/"
+	var candidates = []
+	if OS.get_name() == "Windows":
+		# Order: try explicit names (add new env folder names here if needed).
+		for name in [".yolo-env", "yolo-env", ".yolo11-env", "yolo11-env"]:
+			candidates.append(root + name + "/Scripts/python.exe")
+	else:
+		for name in [".yolo-env", "yolo-env", ".yolo11-env", "yolo11-env"]:
+			candidates.append(root + name + "/bin/python")
+	for venv_python in candidates:
+		if _path_exists_abs(venv_python):
+			print("EGC detector: using venv Python at ", venv_python)
+			return venv_python.replace("/", "\\") if OS.get_name() == "Windows" else venv_python
+	push_warning(
+		"EGC detector: no venv python found under res:// (tried .yolo-env / yolo-env / .yolo11-env / yolo11-env). Using fallback."
+	)
+	var fallback = python_executable.strip_edges()
+	if fallback != "":
+		return fallback
+	return "python"
+
+
+func _egc_stop_flag_abs_path() -> String:
+	return ProjectSettings.globalize_path(EGC_STOP_FLAG_RES).replace("/", "\\") if OS.get_name() == "Windows" else ProjectSettings.globalize_path(EGC_STOP_FLAG_RES)
+
+
+func _egc_clear_stop_flag() -> void:
+	var p = _egc_stop_flag_abs_path()
+	if not _path_exists_abs(p):
+		return
+	var d = Directory.new()
+	var err = d.remove(p)
+	if err != OK:
+		push_warning("EGC detector: could not remove stop flag: %s" % p)
+
+
+func _egc_write_stop_flag() -> void:
+	var p = _egc_stop_flag_abs_path()
+	var f = File.new()
+	var err = f.open(p, File.WRITE)
+	if err != OK:
+		push_error("EGC detector: could not write stop flag (is the project folder writable?): %s" % p)
+		return
+	f.store_string("1")
+	f.close()
+	print("EGC detector: stop flag written; detector should close shortly.")
+
+
+func _egc_set_running_ui(running: bool) -> void:
+	$EgcDetectorButton.disabled = running
+	$EgcDetectorStopButton.disabled = not running
+
+
+func _on_EgcDetectorStopButton_pressed() -> void:
+	if _egc_detector_thread == null or not _egc_detector_thread.is_active():
+		push_warning("EGC detector is not running.")
+		return
+	_egc_write_stop_flag()
+
+
+func _on_EgcDetectorButton_pressed() -> void:
+	var script_res = "res://camera_test.py"
+	var dir = Directory.new()
+	if not dir.file_exists(script_res):
+		push_error("EGC detector: missing %s" % script_res)
+		return
+	if _egc_detector_thread != null and _egc_detector_thread.is_active():
+		push_warning("EGC detector is already running (exit Python / close the OpenCV window first).")
+		return
+	_egc_clear_stop_flag()
+	var script_path = ProjectSettings.globalize_path(script_res)
+	_egc_detector_thread = Thread.new()
+	var start_err = _egc_detector_thread.start(self, "_egc_detector_thread_run", script_path)
+	if start_err != OK:
+		push_error("EGC detector: could not start thread (%s)." % start_err)
+		_egc_detector_thread = null
+	else:
+		_egc_set_running_ui(true)
+
+
+func _egc_detector_thread_run(script_path: String) -> void:
+	var output = []
+	var py = _get_egc_python_executable()
+	var script_arg = script_path.replace("/", "\\") if OS.get_name() == "Windows" else script_path
+	print("EGC detector: launching ", py, " ", script_arg)
+	# Capture stderr so import/traceback errors show in the Godot output panel.
+	var exit_code = OS.execute(py, PoolStringArray([script_arg]), true, output, true)
+	if output.size() > 0:
+		print("EGC detector (python output):")
+		for line in output:
+			print("  ", line)
+	call_deferred("_egc_detector_thread_finished", exit_code)
+
+
+func _egc_detector_thread_finished(exit_code: int) -> void:
+	if _egc_detector_thread != null:
+		_egc_detector_thread.wait_to_finish()
+		_egc_detector_thread = null
+	_egc_set_running_ui(false)
+	_egc_clear_stop_flag()
+	print("EGC detector process finished, exit code: ", exit_code)
+	# Godot 3.x: -1 usually means the executable could not be started.
+	if exit_code == -1:
+		push_error(
+			"EGC detector: Python could not be started. Add a venv under the project (e.g. .yolo11-env) or set Interface.python_executable."
+		)
+
 
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
