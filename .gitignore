@@ -6,4 +6,6 @@ __pycache__/
 *.pyd
 .Python
 *.so
-*.mp4
+*.mp4build/
+install/
+log/
